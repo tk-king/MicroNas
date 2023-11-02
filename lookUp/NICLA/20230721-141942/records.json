@@ -1,0 +1,122 @@
+[
+    {
+        "error": "FLASHERROR",
+        "flashSize": 7208,
+        "flopsEstimate": 2323200,
+        "memoryEstimate": [
+            11520,
+            11520
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 40,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                30,
+                4
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                30
+            ],
+            "name": "conv2d_82",
+            "output_shape": [
+                1,
+                16,
+                15,
+                40
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                2
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS"
+    },
+    {
+        "error": "FLASHERROR",
+        "flashSize": 12008,
+        "flopsEstimate": 4627200,
+        "memoryEstimate": [
+            13440,
+            13440
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 40,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                30,
+                8
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                30
+            ],
+            "name": "conv2d_83",
+            "output_shape": [
+                1,
+                16,
+                15,
+                40
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                2
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS"
+    }
+]

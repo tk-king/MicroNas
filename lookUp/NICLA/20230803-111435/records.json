@@ -1,0 +1,680 @@
+[
+    {
+        "flashSize": 1512,
+        "flopsEstimate": 8640,
+        "memory": {
+            "kTensorAreaUsed": "1796"
+        },
+        "memoryEstimate": [
+            1120,
+            1120
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                8
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1028",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 64524,
+                "millis": 1.0081875,
+                "type": 1
+            },
+            {
+                "cpuCycles": 48386,
+                "millis": 0.7560312499999999,
+                "type": 255
+            },
+            {
+                "cpuCycles": 47935,
+                "millis": 0.7489843749999999,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1560,
+        "flopsEstimate": 16320,
+        "memory": {
+            "kTensorAreaUsed": "2436"
+        },
+        "memoryEstimate": [
+            1760,
+            1760
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                16
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1029",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 60177,
+                "millis": 0.940265625,
+                "type": 1
+            },
+            {
+                "cpuCycles": 44031,
+                "millis": 0.687984375,
+                "type": 255
+            },
+            {
+                "cpuCycles": 43580,
+                "millis": 0.6809375,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1608,
+        "flopsEstimate": 24000,
+        "memory": {
+            "kTensorAreaUsed": "3076"
+        },
+        "memoryEstimate": [
+            2400,
+            2400
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                24
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1030",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 83134,
+                "millis": 1.29896875,
+                "type": 1
+            },
+            {
+                "cpuCycles": 66331,
+                "millis": 1.036421875,
+                "type": 255
+            },
+            {
+                "cpuCycles": 65880,
+                "millis": 1.029375,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1656,
+        "flopsEstimate": 31680,
+        "memory": {
+            "kTensorAreaUsed": "3716"
+        },
+        "memoryEstimate": [
+            3040,
+            3040
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                32
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1031",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 78209,
+                "millis": 1.222015625,
+                "type": 1
+            },
+            {
+                "cpuCycles": 62063,
+                "millis": 0.969734375,
+                "type": 255
+            },
+            {
+                "cpuCycles": 61612,
+                "millis": 0.9626875,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1704,
+        "flopsEstimate": 39360,
+        "memory": {
+            "kTensorAreaUsed": "4356"
+        },
+        "memoryEstimate": [
+            3680,
+            3680
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                40
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1032",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 100978,
+                "millis": 1.57778125,
+                "type": 1
+            },
+            {
+                "cpuCycles": 84137,
+                "millis": 1.314640625,
+                "type": 255
+            },
+            {
+                "cpuCycles": 83686,
+                "millis": 1.3075937499999999,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1752,
+        "flopsEstimate": 47040,
+        "memory": {
+            "kTensorAreaUsed": "4996"
+        },
+        "memoryEstimate": [
+            4320,
+            4320
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                48
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1033",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 96546,
+                "millis": 1.50853125,
+                "type": 1
+            },
+            {
+                "cpuCycles": 79743,
+                "millis": 1.245984375,
+                "type": 255
+            },
+            {
+                "cpuCycles": 79292,
+                "millis": 1.2389375,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1800,
+        "flopsEstimate": 54720,
+        "memory": {
+            "kTensorAreaUsed": "5636"
+        },
+        "memoryEstimate": [
+            4960,
+            4960
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                56
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1034",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 118674,
+                "millis": 1.85428125,
+                "type": 1
+            },
+            {
+                "cpuCycles": 101835,
+                "millis": 1.591171875,
+                "type": 255
+            },
+            {
+                "cpuCycles": 101384,
+                "millis": 1.584125,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1848,
+        "flopsEstimate": 62400,
+        "memory": {
+            "kTensorAreaUsed": "6276"
+        },
+        "memoryEstimate": [
+            5600,
+            5600
+        ],
+        "modelConfig": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+            },
+            "bias_regularizer": null,
+            "data_format": "channels_last",
+            "dilation_rate": [
+                1,
+                1
+            ],
+            "dtype": "float32",
+            "filters": 6,
+            "groups": 1,
+            "input_shape": [
+                1,
+                16,
+                5,
+                64
+            ],
+            "kernel_constraint": null,
+            "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": {
+                    "seed": null
+                }
+            },
+            "kernel_regularizer": null,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "name": "conv2d_1035",
+            "output_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "padding": "same",
+            "strides": [
+                1,
+                1
+            ],
+            "trainable": true,
+            "use_bias": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 114338,
+                "millis": 1.78653125,
+                "type": 1
+            },
+            {
+                "cpuCycles": 97498,
+                "millis": 1.52340625,
+                "type": 255
+            },
+            {
+                "cpuCycles": 97047,
+                "millis": 1.516359375,
+                "type": 3
+            }
+        ]
+    },
+    {
+        "flashSize": 1176,
+        "flopsEstimate": 0,
+        "memory": {
+            "kTensorAreaUsed": "1092"
+        },
+        "memoryEstimate": [
+            486,
+            486
+        ],
+        "modelConfig": {
+            "data_format": "channels_last",
+            "dtype": "float32",
+            "input_shape": [
+                1,
+                16,
+                5,
+                6
+            ],
+            "keepdims": false,
+            "name": "global_average_pooling2d",
+            "output_shape": [
+                1,
+                6
+            ],
+            "trainable": true
+        },
+        "tflmBackend": "CMSIS",
+        "timing": [
+            {
+                "cpuCycles": 101182,
+                "millis": 1.5809687499999998,
+                "type": 1
+            },
+            {
+                "cpuCycles": 84416,
+                "millis": 1.3190000000000002,
+                "type": 255
+            },
+            {
+                "cpuCycles": 83957,
+                "millis": 1.3118281250000001,
+                "type": 40
+            }
+        ]
+    }
+]

@@ -1,0 +1,10 @@
+setup.py
+MicroNAS.egg-info/PKG-INFO
+MicroNAS.egg-info/SOURCES.txt
+MicroNAS.egg-info/dependency_links.txt
+MicroNAS.egg-info/top_level.txt
+src/Utilities.py
+src/__init__.py
+src/cnnGenerator.py
+src/config.py
+src/main.py
