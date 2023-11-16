@@ -1,10 +1,6 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: MicroNAS
 Version: 1.0.0
 Summary: Hardware aware neural architecture search for time series classification
-Home-page: UNKNOWN
 Author: Tobias King
 Author-email: tk.king.dev@gmail.com
-License: UNKNOWN
-Description: UNKNOWN
-Platform: UNKNOWN

@@ -1,6 +1,6 @@
 import argparse
 import os
-from src.config import Config
+from micronas.config import Config
 parser = argparse.ArgumentParser(
                     prog='MicroNAS',
                     description='Sarches for NNs',
@@ -13,7 +13,7 @@ parser.add_argument('--retrain_epochs', type=int, default=Config.retrain_epochs)
 parser.add_argument('--path', type=str)
 parser.add_argument('--full_train', type=bool, default=False)
 
-from src.Utils.Experiment import Experiment
+from micronas.Utils.Experiment import Experiment
 
 
 args = parser.parse_args()
@@ -39,16 +39,16 @@ print("Train_full: ", train_full)
 print("Config: ", Config.mcu, Config.num_retraining, Config.dataset)
 
 import torch
-from src.Nas.Networks.Pytorch.SearchNet import SearchNet
-from src.Profiler.LatMemProfiler import set_ignore_latency, _lookUp
-from src.Nas.Networks.Pytorch.SearchModule import InferenceType
-from src.config import Config
+from micronas.Nas.Networks.Pytorch.SearchNet import SearchNet
+from micronas.Profiler.LatMemProfiler import set_ignore_latency, _lookUp
+from micronas.Nas.Networks.Pytorch.SearchModule import InferenceType
+from micronas.config import Config
 import warnings
-from src.Nas.Search import ArchSearcher
+from micronas.Nas.Search import ArchSearcher
 warnings.filterwarnings("ignore", category=FutureWarning)
-from src.Utils.dataloader  import get_dataloaders, loadDataset
+from micronas.Utils.dataloader  import get_dataloaders, loadDataset
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from src.TfLite.structure import TfLiteModel
+from micronas.TfLite.structure import TfLiteModel
 import numpy as np
 from tqdm import tqdm
 from sklearn.preprocessing import MultiLabelBinarizer

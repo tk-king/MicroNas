@@ -1,0 +1,1 @@
+from micronas.TfLite.structure import TfLiteModel

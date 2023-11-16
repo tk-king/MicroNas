@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
+import pathlib
+import os
+
+
+root = pathlib.Path(__file__).parent
+os.chdir(str(root))
 
 
 setup(name='MicroNAS',
@@ -8,6 +14,5 @@ setup(name='MicroNAS',
       description='Hardware aware neural architecture search for time series classification',
       author='Tobias King',
       author_email='tk.king.dev@gmail.com',
-      packages=['micronas'],
-      package_dir={"micronas": "src"}
+      packages=['micronas']
      )
