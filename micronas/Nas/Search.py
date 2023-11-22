@@ -1,13 +1,8 @@
-from cProfile import label
-from statistics import mean
 import torch
 from torch import nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 from micronas.Nas.Utils import AvgrageMeter, accuracy
 from tqdm import tqdm
-import matplotlib.pyplot as plt
-import numpy as np
 
 from micronas.config import Config
 
@@ -30,43 +25,6 @@ class SearchLogger():
 
     def appendMemory(self, memory):
         self._memory.append(float(memory.detach().numpy()))
-
-    def visualize(self, e_len):
-        figure, axis = plt.subplots(1, 3)
-        figure.set_size_inches(18.5, 7)
-
-        def groupByEpoch(data, e_len):
-            return [np.mean(data[i:i+e_len]) for i in range(0, len(data), e_len)]
-
-        losses = groupByEpoch(self._loss_out, e_len)
-        axis[0].plot(losses)
-        axis[0].legend(["Loss_CE"])
-
-        losses_lat = groupByEpoch(self._loss_lat, e_len)
-
-        axis[1].plot(losses_lat)
-        axis[1].legend(["Loss_LAT"])
-
-        losses_mem = groupByEpoch(self._loss_mem, e_len)
-        
-        axis[2].plot(losses_mem)
-        axis[2].legend(["Loss_MEM"])
-
-        fig_2, axis_2 = plt.subplots(1, 2)
-        fig_2.set_size_inches(18.5, 7)
-
-        avg_lat = groupByEpoch(self._latency, e_len)
-
-        axis_2[0].plot(avg_lat)
-        axis_2[0].legend(["Mean Latency"])
-
-        avg_mem = groupByEpoch(self._memory, e_len)
-
-        axis_2[1].plot(avg_mem)
-        axis_2[1].legend(["Mean Memory"])
-
-
-        plt.show()
 
 
 class ArchLoss(nn.Module):

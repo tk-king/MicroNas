@@ -1,6 +1,5 @@
 from micronas.config import Config, Device
 Config.mcu = Device.NUCLEO.name
-# Config.port = "/dev/cu.usbmodem0D0A24802"
 Config.port = "/dev/cu.usbmodem111403"
 
 from micronas.Profiler.LatMemProfiler import loadConfigs, _lookUp

@@ -49,7 +49,6 @@ from micronas.Utils.dataloader  import get_dataloaders, loadDataset
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from micronas.TfLite.structure import TfLiteModel
 import numpy as np
-from tqdm import tqdm
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import numpy as np
