@@ -1,16 +1,16 @@
 Metadata-Version: 2.1
 Name: MicroNAS
-Version: 1.0.0
+Version: 1.0.1
 Summary: Hardware-aware neural architecture search for time series classification
 Author: Tobias King
 Author-email: tk.king.dev@gmail.com
 Requires-Python: >=3.8
 Requires-Dist: numpy
-Requires-Dist: pydantic==1.9.0
+Requires-Dist: pydantic==2.6.3
 Requires-Dist: pyserial==3.5
-Requires-Dist: scikit_learn==1.0.2
+Requires-Dist: scikit_learn==1.4.0
 Requires-Dist: tensorflow_model_optimization
 Requires-Dist: tflite
-Requires-Dist: torch==2.1.1
-Requires-Dist: tqdm==4.66.1
+Requires-Dist: torch==2.2.1
+Requires-Dist: tqdm==4.66.2
 Requires-Dist: tensorflow==2.15.0

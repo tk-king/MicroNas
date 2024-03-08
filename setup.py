@@ -13,7 +13,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='MicroNAS',
-    version='1.0.0',
+    version='1.0.1',
     description='Hardware-aware neural architecture search for time series classification',
     author='Tobias King',
     author_email='tk.king.dev@gmail.com',
