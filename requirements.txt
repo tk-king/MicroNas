@@ -1,9 +1,11 @@
 numpy
-pydantic==1.9.0
-pyserial==3.5
-scikit_learn==1.0.2
+pydantic
+pyserial
+scikit_learn
 tensorflow_model_optimization
 tflite
-torch==2.1.1
-tqdm==4.66.1
-tensorflow==2.15.0F
+torch
+tqdm
+tensorflow
+tf-keras
+h5py

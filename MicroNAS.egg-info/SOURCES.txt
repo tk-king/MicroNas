@@ -8,7 +8,9 @@ micronas/Utilities.py
 micronas/__init__.py
 micronas/cnnGenerator.py
 micronas/config.py
+micronas/defaultConfig.py
 micronas/main.py
+micronas/main2.py
 micronas/tflm.py
 micronas/Communication/__init__.py
 micronas/Communication/arduinoComm.py
