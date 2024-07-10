@@ -30,7 +30,7 @@ class MixedOp(keras.layer.Layer):
             max_w = np.argmax(weights)
             return self.conv_layers[max_w](x)
         if weights is None:
-            weights = np.ones(len(self.conv_layers), dtype=float)
+            weights = np.ones(len(self.conv_layers), dtype=Config.tensor_dtype)
         
         conv = []
         for (l, w) in zip(self.conv_layers, weights):

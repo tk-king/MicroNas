@@ -25,7 +25,8 @@ class MicroNasMCU(Enum):
 class DefaultConfig():
     batch_size : int = 64
     compute_unit : str = "cpu"
- 
+    tensor_dtype : torch.dtype = torch.float32
+
     # SearchSpace Settings
     time_reduce_ch : int = 8
     time_reduce_granularity : int = 1

@@ -205,14 +205,14 @@ def calcMemory(type, input_shape, output_shape, kernel_shape=None, only_outputs=
         depth_conv = in_size + intermediate_size + (4 * np.prod(kernel_shape) + 4)
         point_conv = intermediate_size + out_size
         mem = max(depth_conv, point_conv) if not only_outputs else point_conv
-        return torch.tensor(mem, dtype=float)
+        return torch.tensor(mem, dtype=Config.tensor_dtype)
         
 
     # print("type: ", type, "input_shape: ", input_shape, "output_shape: ",
     #       output_shape, "arm: ", mem, "kernel_size: ", kernel_shape, "in_s: ", in_size, "out_s: ", out_size, "mem: ", mem + in_size + out_size)
     if only_outputs:
-        return torch.tensor(mem + out_size, dtype=float)
-    return torch.tensor(mem + in_size + out_size, dtype=float)
+        return torch.tensor(mem + out_size, dtype=Config.tensor_dtype)
+    return torch.tensor(mem + in_size + out_size, dtype=Config.tensor_dtype)
 
 tmp = []
 

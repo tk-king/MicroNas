@@ -49,7 +49,7 @@ class MixedOp(nn.Module):
             out_paths = []
             out_lat = []
             out_mem = []
-            weights = self._weights if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=float)
+            weights = self._weights if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=Config.tensor_dtype)
             max_w = torch.argmax(weights, dim=1)
             for idx, w in enumerate(max_w):
                 res, lat, mem = self.conv_layers[w](x, onlyOutputs=idx != 0)
@@ -60,7 +60,7 @@ class MixedOp(nn.Module):
             return torch.stack(out_paths).sum(dim=0), torch.stack(out_lat).sum(), torch.stack(out_mem).sum()
         
         # Turn on / off the weights
-        weights = F.softmax(self._weights, dim=0) if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=float)
+        weights = F.softmax(self._weights, dim=0) if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=Config.tensor_dtype)
         lat_acc, mem_acc = torch.tensor(0, dtype=torch.float), torch.tensor(0, dtype=torch.float)
         conv = []
         for l in self.conv_layers:
@@ -86,7 +86,7 @@ class MixedOp(nn.Module):
         return x, lat_acc, mem_acc
 
     def getKeras(self, x, useWeights=True, getPruned=False):
-        weights = self._weights if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=float)
+        weights = self._weights if useWeights else torch.ones(self._parallel, len(self.conv_layers), dtype=Config.tensor_dtype)
 
         conv = []
         weights = weights.detach().numpy()

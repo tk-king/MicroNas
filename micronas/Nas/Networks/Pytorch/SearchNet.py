@@ -128,8 +128,8 @@ class ReduceCH(nn.Module):
         self._dropout = nn.Dropout2d(0.3)
 
         # Weights for NAS
-        self._weights_channels_bottleNeck = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
-        self._weights_channels_convBlock = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
+        self._weights_channels_bottleNeck = torch.zeros(self._out_ch // granularity, dtype=Config.tensor_dtype, requires_grad=True, device=Config.compute_unit)
+        self._weights_channels_convBlock = torch.zeros(self._out_ch // granularity, dtype=Config.tensor_dtype, requires_grad=True, device=Config.compute_unit)
 
         self._weights_channels_bottleNeck_last = None
         self._weights_channels_convBlock_last = None
@@ -191,7 +191,7 @@ class ReduceCH(nn.Module):
         conv_block_out, conv_block_lat, conv_block_mem, prob_no_op = self.chs(bt_out, eps, weights_ch_convBlock_softmax, weights_ch_bt_softmax, inf_type)
         conv_mem = torch.max(bt_mem, conv_block_mem)
         conv_lat = (bt_lat + conv_block_lat) * (1-prob_no_op)
-        res_out = self._res_con((x, torch.tensor(0, dtype=float) , torch.tensor(0, dtype=float)), (conv_block_out, conv_lat, conv_mem), prob_no_op=prob_no_op,
+        res_out = self._res_con((x, torch.tensor(0, dtype=Config.tensor_dtype) , torch.tensor(0, dtype=Config.tensor_dtype)), (conv_block_out, conv_lat, conv_mem), prob_no_op=prob_no_op,
         eps=eps, weights=weights_ch_convBlock_softmax, last_ch_weights=weights_lastCh_softmax, inf_type=inf_type)
         # Check if module should be skipped
         if not self._reduce:
@@ -249,7 +249,7 @@ class ReduceTime(nn.Module):
 
         self._dropout = nn.Dropout2d(0.3)
 
-        self._weights_channels = torch.zeros(channels // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
+        self._weights_channels = torch.zeros(channels // granularity, dtype=Config.tensor_dtype, requires_grad=True, device=Config.compute_unit)
 
         self._weights_channels_last = None
 

@@ -20,7 +20,7 @@ class ChannelConv(nn.Module):
             reduce_out, lat_reduce, mem_reduce = self.reduce(conv_out)
             return reduce_out, lat_conv + lat_reduce, torch.max(mem_conv, mem_reduce)
         if weights is None:
-            weights = torch.ones(len(self.conv_layers), dtype=float)
+            weights = torch.ones(len(self.conv_layers), dtype=Config.tensor_dtype)
         
         lat_acc, mem_acc = torch.tensor(0, dtype=torch.float), torch.tensor(0, dtype=torch.float)
         conv = []

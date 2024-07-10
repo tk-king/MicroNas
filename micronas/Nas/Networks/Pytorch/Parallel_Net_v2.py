@@ -77,11 +77,11 @@ class TCN_CH_REDUCE(NAS_Module):
         self._add_parallel = Dyn_Add(channels, channels, granularity=granularity)
         
         # Weights for the architecture
-        self._weights_op = torch.autograd.Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=float), requires_grad=True)
-        self._weights_channel_bt = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=float), requires_grad=True)
-        self._weights_channel_conv = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=float), requires_grad=True)
-        self._weights_skip_connect = torch.autograd.Variable(torch.zeros(len(self._skip_connect), dtype=float), requires_grad=True)
-        self._weights_skip_module = torch.autograd.Variable(torch.zeros(2, dtype=float), requires_grad=True)
+        self._weights_op = torch.autograd.Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=Config.tensor_dtype), requires_grad=True)
+        self._weights_channel_bt = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=Config.tensor_dtype), requires_grad=True)
+        self._weights_channel_conv = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=Config.tensor_dtype), requires_grad=True)
+        self._weights_skip_connect = torch.autograd.Variable(torch.zeros(len(self._skip_connect), dtype=Config.tensor_dtype), requires_grad=True)
+        self._weights_skip_module = torch.autograd.Variable(torch.zeros(2, dtype=Config.tensor_dtype), requires_grad=True)
 
     def get_nas_weights(self):
         w = [self._weights_op, self._weights_channel_bt, self._weights_channel_conv, self._weights_skip_connect]
@@ -143,7 +143,7 @@ class TCN_CH_REDUCE(NAS_Module):
         mem_stack = []
         parallel_out = None
         for i, par_weights in enumerate(self._weights_op):
-            mem_acc = torch.tensor(0.0, dtype=float)
+            mem_acc = torch.tensor(0.0, dtype=Config.tensor_dtype)
             weights_conv_softmax = weight_softmax(par_weights, eps)
             conv_block_out_stack = []
             for w, k, (out, lat, mem) in zip(weights_conv_softmax, self._kernel, layer_stack):
@@ -268,9 +268,9 @@ class TCModule(NAS_Module):
         self.bn = [nn.BatchNorm2d(channels) for _ in range(parallel)]
         self._bn_conv = [nn.BatchNorm2d(channels) for _ in self._layers]
 
-        self._weights = torch.autograd.Variable(torch.zeros((parallel, len(self._layers)), dtype=float), requires_grad=True)
-        self._channel_weights_bt = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=float), requires_grad=True)
-        self._channel_weights_conv = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=float), requires_grad=True)
+        self._weights = torch.autograd.Variable(torch.zeros((parallel, len(self._layers)), dtype=Config.tensor_dtype), requires_grad=True)
+        self._channel_weights_bt = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=Config.tensor_dtype), requires_grad=True)
+        self._channel_weights_conv = torch.autograd.Variable(torch.zeros(channels // granularity, dtype=Config.tensor_dtype), requires_grad=True)
 
     def get_nas_weights(self):
         if self._bottleNeck is not None:
@@ -302,7 +302,7 @@ class TCModule(NAS_Module):
         last_ch_weights=weight_softmax(last_ch_weights, eps) if last_ch_weights is not None else None
         channel_weights_bt = weight_softmax(self._channel_weights_bt, eps)
 
-        lat_bot, mem_bot = torch.tensor(0.0, dtype=float), torch.tensor(0.0, dtype=float)
+        lat_bot, mem_bot = torch.tensor(0.0, dtype=Config.tensor_dtype), torch.tensor(0.0, dtype=Config.tensor_dtype)
         if self._bottleNeck is not None:
             x, lat_bot, mem_bot = self._bottleNeck(x, channel_weights_bt, last_ch_weights=last_ch_weights if last_ch_weights is not None else None)
 
@@ -400,7 +400,7 @@ class  Parallel_Net_v2(NAS_Module):
         self.cls_softmax = LogSoftMax()
 
 
-        self._nas_input_weights = torch.autograd.Variable(torch.zeros(num_inputs, dtype=float), requires_grad=True)
+        self._nas_input_weights = torch.autograd.Variable(torch.zeros(num_inputs, dtype=Config.tensor_dtype), requires_grad=True)
 
 
     def get_nas_weights(self):

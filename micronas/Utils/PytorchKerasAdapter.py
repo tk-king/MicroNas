@@ -40,7 +40,7 @@ class PytorchKerasAdapter(keras.utils.Sequence):
         # if self.freq:
         #     input_freq = torch.moveaxis(input_freq, 1, -1).numpy().astype(np.float32)
         target = to_categorical(
-            target.numpy(), num_classes=self.num_classes, dtype=float)
+            target.numpy(), num_classes=self.num_classes, dtype=Config.tensor_dtype)
 
         result = ()
         if self.time:

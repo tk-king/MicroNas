@@ -122,7 +122,7 @@ class Dyn_Conv2D_old(nn.Conv2d):
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=Config.tensor_dtype).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -154,8 +154,8 @@ class Dyn_Conv2D_old(nn.Conv2d):
 
         # Apply masks with weights
         stack_res = []
-        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
-        mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
+        lat_acc = torch.tensor(0, dtype=Config.tensor_dtype).to(Config.compute_unit)
+        mem_acc = torch.tensor(0, dtype=Config.tensor_dtype).to(Config.compute_unit)
 
         for i, (msk, w) in enumerate(zip(self._masks, weights)):
             stack_res.append(msk * w)
@@ -233,13 +233,13 @@ class Dyn_Conv2D(nn.Conv2d):
     def forward(self, x, eps=None, weights="full", onlyOutputs=False, inf_type=InferenceType.NORMAL, last_ch_weights=None):
         b, c, w, h = x.shape
         if weights == "full":
-            weights = torch.zeros(self._out_channels // self._granularity, dtype=float)
+            weights = torch.zeros(self._out_channels // self._granularity, dtype=Config.tensor_dtype)
             weights[-1] = 1
         # else:
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=Config.tensor_dtype).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -282,8 +282,8 @@ class Dyn_Conv2D(nn.Conv2d):
                     tmp_mem.append(mem)
                 lat_matrix.append(tmp_lat)
                 mem_matrix.append(tmp_mem)
-            self._latencies = torch.tensor(lat_matrix, dtype=float)
-            self._memories = torch.tensor(mem_matrix, dtype=float)
+            self._latencies = torch.tensor(lat_matrix, dtype=Config.tensor_dtype)
+            self._memories = torch.tensor(mem_matrix, dtype=Config.tensor_dtype)
 
 
         # print("types: ", weights.type(), self._latencies.type(), last_ch_weights.type())
@@ -364,7 +364,7 @@ class Dyn_SeparableConv2D(nn.Module):
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=Config.tensor_dtype).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -395,8 +395,8 @@ class Dyn_SeparableConv2D(nn.Module):
 
         # Apply masks with weights
         stack_res = []
-        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
-        mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
+        lat_acc = torch.tensor(0, dtype=Config.tensor_dtype).to(Config.compute_unit)
+        mem_acc = torch.tensor(0, dtype=Config.tensor_dtype).to(Config.compute_unit)
 
         for i, (msk, w) in enumerate(zip(self._masks, weights)):
             stack_res.append(msk * w)
@@ -523,7 +523,7 @@ class Dyn_Add(nn.Module):
             # assert(len(weights) == self._out_channels // self._granularity)
             self._granularity = self._out_channels // len(weights)
         res = x1 + x2
-        # lat_acc, mem_acc = torch.tensor(0.0, dtype=float).to(Config.compute_unit), torch.tensor(0.0, dtype=float).to(Config.compute_unit)
+        # lat_acc, mem_acc = torch.tensor(0.0, dtype=Config.tensor_dtype).to(Config.compute_unit), torch.tensor(0.0, dtype=Config.tensor_dtype).to(Config.compute_unit)
 
         if not self._compiled:
             lats, mems = [], []
@@ -532,8 +532,8 @@ class Dyn_Add(nn.Module):
                 lat, mem = lookup_torch("add", add_shape, add_shape)
                 lats.append(lat)
                 mems.append(mem)
-            self._latencies = torch.tensor(lats, dtype=float)
-            self._memories = torch.tensor(mems, dtype=float)
+            self._latencies = torch.tensor(lats, dtype=Config.tensor_dtype)
+            self._memories = torch.tensor(mems, dtype=Config.tensor_dtype)
         
         lat_acc = torch.sum(self._latencies * weights)
         mem_acc = torch.sum(self._memories * weights)
