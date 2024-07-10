@@ -93,9 +93,9 @@ print("Num_lookup: ", len(_lookUp))
 
 set_ignore_latency(False)
 
-nas_net = SearchNet([ts_len, num_sensors], num_classes).to(Config.device)
+nas_net = SearchNet([ts_len, num_sensors], num_classes).to(Config.compute_unit)
 weights = nas_net.get_nas_weights()
-fake_input = torch.randn((1, 1, ts_len, num_sensors)).to(Config.device)
+fake_input = torch.randn((1, 1, ts_len, num_sensors)).to(Config.compute_unit)
 print("output_shape: ", nas_net(fake_input))
 searcher = ArchSearcher(nas_net)
 

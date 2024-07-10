@@ -25,7 +25,7 @@ class MakeChoice(NAS_Module):
 
         self._num_choices = num_choices
         self._also_weights = alsoWeights
-        self._weights = Variable(1e-3 * torch.randn(num_choices, dtype=float, device=Config.device), requires_grad=True)
+        self._weights = Variable(1e-3 * torch.randn(num_choices, dtype=float, device=Config.compute_unit), requires_grad=True)
         self._weights_last = None
 
     def get_nas_weights(self):
@@ -113,7 +113,7 @@ class Parallel_Choice_Add(NAS_Module):
 
         # self._bn = nn.BatchNorm2d(channels)
 
-        self._weights_choice = Variable(1e-3 * torch.randn(self._num_choices, dtype=float, device=Config.device), requires_grad=True)
+        self._weights_choice = Variable(1e-3 * torch.randn(self._num_choices, dtype=float, device=Config.compute_unit), requires_grad=True)
         self._weights_choice_last = None
 
     def get_nas_weights(self):

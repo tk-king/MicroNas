@@ -122,7 +122,7 @@ class Dyn_Conv2D_old(nn.Conv2d):
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.device)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -148,14 +148,14 @@ class Dyn_Conv2D_old(nn.Conv2d):
             B, C, H, W = res.shape
             num_masks = len(range(self._granularity, self._out_channels + self._granularity, self._granularity))
             for i in range(self._granularity, self._out_channels + self._granularity, self._granularity):
-                mask_ones = torch.ones((B, i, H, W)).to(Config.device)
-                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.device)
+                mask_ones = torch.ones((B, i, H, W)).to(Config.compute_unit)
+                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.compute_unit)
                 self._masks.append(torch.cat((mask_ones, mask_zeros), dim=1) * ( (num_masks -  i) / num_masks))
 
         # Apply masks with weights
         stack_res = []
-        lat_acc = torch.tensor(0, dtype=float).to(Config.device)
-        mem_acc = torch.tensor(0, dtype=float).to(Config.device)
+        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
+        mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
 
         for i, (msk, w) in enumerate(zip(self._masks, weights)):
             stack_res.append(msk * w)
@@ -239,7 +239,7 @@ class Dyn_Conv2D(nn.Conv2d):
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.device)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -262,8 +262,8 @@ class Dyn_Conv2D(nn.Conv2d):
         if not self._compiled:
             B, C, H, W = res.shape
             for i in range(self._granularity, self._out_channels + self._granularity, self._granularity):
-                mask_ones = torch.ones((B, i, H, W)).to(Config.device)
-                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.device)
+                mask_ones = torch.ones((B, i, H, W)).to(Config.compute_unit)
+                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.compute_unit)
                 self._masks.append(torch.cat((mask_ones, mask_zeros), dim=1))
 
         stack_res = []
@@ -364,7 +364,7 @@ class Dyn_SeparableConv2D(nn.Module):
         #     assert(len(weights) == self._out_channels // self._granularity)
 
         if last_ch_weights is None:
-            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.device)
+            last_ch_weights = torch.zeros(self._out_channels // self._granularity, dtype=float).to(Config.compute_unit)
             last_ch_weights[-1] = 1
 
         assert(abs(last_ch_weights.sum() -1) < 1e-5)
@@ -389,14 +389,14 @@ class Dyn_SeparableConv2D(nn.Module):
         if len(self._masks) == 0:
             B, C, H, W = res.shape
             for i in range(self._granularity, self._out_channels + self._granularity, self._granularity):
-                mask_ones = torch.ones((B, i, H, W)).to(Config.device)
-                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.device)
+                mask_ones = torch.ones((B, i, H, W)).to(Config.compute_unit)
+                mask_zeros = torch.zeros((B, C - i, H, W)).to(Config.compute_unit)
                 self._masks.append(torch.cat((mask_ones, mask_zeros), dim=1))
 
         # Apply masks with weights
         stack_res = []
-        lat_acc = torch.tensor(0, dtype=float).to(Config.device)
-        mem_acc = torch.tensor(0, dtype=float).to(Config.device)
+        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
+        mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
 
         for i, (msk, w) in enumerate(zip(self._masks, weights)):
             stack_res.append(msk * w)
@@ -523,7 +523,7 @@ class Dyn_Add(nn.Module):
             # assert(len(weights) == self._out_channels // self._granularity)
             self._granularity = self._out_channels // len(weights)
         res = x1 + x2
-        # lat_acc, mem_acc = torch.tensor(0.0, dtype=float).to(Config.device), torch.tensor(0.0, dtype=float).to(Config.device)
+        # lat_acc, mem_acc = torch.tensor(0.0, dtype=float).to(Config.compute_unit), torch.tensor(0.0, dtype=float).to(Config.compute_unit)
 
         if not self._compiled:
             lats, mems = [], []
@@ -601,7 +601,7 @@ class Id(nn.Module):
     def forward(self, x, eps=None, onlyOutputs=False, weights=None, inf_type=InferenceType.NORMAL, last_ch_weights=None):
         if self._conv:
             return self._conv(x)
-        return x, torch.tensor(0.0).to(Config.device), torch.tensor(0.0).to(Config.device)
+        return x, torch.tensor(0.0).to(Config.compute_unit), torch.tensor(0.0).to(Config.compute_unit)
 
     def getKeras(self, x, getPruned=None, weights=None):
         return x
@@ -617,10 +617,10 @@ class Zero(nn.Module):
     def forward(self, x, eps=None, onlyOutputs=False, weights=None, inf_type=InferenceType.NORMAL, last_ch_weights=None):
         B, C, H, W = x.shape
         ch = self._channels if self._channels is not None else C
-        res = torch.zeros((B, ch, H, W)).to(Config.device)
+        res = torch.zeros((B, ch, H, W)).to(Config.compute_unit)
         res = res[:,:,::self._stride[0],::self._stride[1]]
         self._out_shape = res
-        return res, torch.tensor(0).to(Config.device), torch.tensor(0).to(Config.device)
+        return res, torch.tensor(0).to(Config.compute_unit), torch.tensor(0).to(Config.compute_unit)
 
     def getKeras(self, x, getPruned=None, weights=None):
         # return tf.zeros(torch_to_keras_shape(self._out_shape.detach().numpy().shape))

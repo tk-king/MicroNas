@@ -26,10 +26,10 @@ class Sequential(NAS_Module):
 
     def forward(self, x, eps, inf_type=InferenceType.NORMAL, last_ch_weights=None):
         if len(self._layers) == 0:
-            lat = torch.tensor(0, dtype=float).to(Config.device)
-            mem = torch.tensor(0, dtype=float).to(Config.device)
+            lat = torch.tensor(0, dtype=float).to(Config.compute_unit)
+            mem = torch.tensor(0, dtype=float).to(Config.compute_unit)
             return x, lat, mem, last_ch_weights
-        lat_acc = torch.tensor(0, dtype=float).to(Config.device)
+        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
         mem_stack = []
         for l in self._layers:
             layer_res = l(x, eps=eps, inf_type=inf_type, last_ch_weights=last_ch_weights)

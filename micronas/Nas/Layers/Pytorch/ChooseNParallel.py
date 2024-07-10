@@ -38,7 +38,7 @@ class ChooseNParallel(NAS_Module):
         self._add_parallel = Dyn_Add(num_channels, num_channels, granularity=granularity)
         
         # Weights for the architecture
-        self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=float, device=Config.computeUnit), requires_grad=True)
+        self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=float, device=Config.compute_unit), requires_grad=True)
 
         self._weights_op_last = None
 
@@ -91,7 +91,7 @@ class ChooseNParallel(NAS_Module):
         if inf_type == InferenceType.MAX_WEIGHT:
             weights_op_softmax = weight_softmax(self._weights_op, eps, gumbel=False)
 
-        lat_acc = torch.tensor(0, dtype=float).to(Config.device)
+        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
 
         B, C, H, W = x.shape
         input_mem = C * W * H
@@ -108,7 +108,7 @@ class ChooseNParallel(NAS_Module):
         parallel_out = None
 
         for i, w_op in enumerate(weights_op_softmax):
-            mem_acc = torch.tensor(0, dtype=float).to(Config.device)
+            mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
             conv_out_stack = []
             for w, (out, lat, mem) in zip(w_op, layer_stack):
                 conv_out_stack.append(out * w)
@@ -185,7 +185,7 @@ class ChooseNParallel_v2(NAS_Module):
         self._add_parallel = Dyn_Add(num_channels, num_channels, granularity=granularity)
         
         # Weights for the architecture
-        self._weights_op = Variable(1e-3 * torch.randn((len(self._layers), 2), dtype=float, device=Config.device), requires_grad=True)
+        self._weights_op = Variable(1e-3 * torch.randn((len(self._layers), 2), dtype=float, device=Config.compute_unit), requires_grad=True)
         self._weights_op_last = None
 
     def print_nas_weights(self, eps, gumbel, raw):
@@ -237,7 +237,7 @@ class ChooseNParallel_v2(NAS_Module):
             weights_op_softmax = weight_softmax(self._weights_op, eps, gumbel=False)
 
 
-        lat_acc = torch.tensor(0, dtype=float).to(Config.device)
+        lat_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
 
         B, C, H, W = x.shape
         input_mem = C * W * H
@@ -256,7 +256,7 @@ class ChooseNParallel_v2(NAS_Module):
         output_mem = H_out * W_out * torch.argmax(last_ch_weights_softmax) * self._granularity
 
         for i, (w, (out, lat, mem)) in enumerate(zip(weights_op_softmax, layer_stack)): # w[0] => ZERO_OP, w[1] => LAYER_OP
-            mem_acc = torch.tensor(0, dtype=float).to(Config.device)
+            mem_acc = torch.tensor(0, dtype=float).to(Config.compute_unit)
             op_out = out * w[1]
             lat_acc += lat * w[1]
             mem_acc += mem * w[1]

@@ -128,8 +128,8 @@ class ReduceCH(nn.Module):
         self._dropout = nn.Dropout2d(0.3)
 
         # Weights for NAS
-        self._weights_channels_bottleNeck = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.device)
-        self._weights_channels_convBlock = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.device)
+        self._weights_channels_bottleNeck = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
+        self._weights_channels_convBlock = torch.zeros(self._out_ch // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
 
         self._weights_channels_bottleNeck_last = None
         self._weights_channels_convBlock_last = None
@@ -249,7 +249,7 @@ class ReduceTime(nn.Module):
 
         self._dropout = nn.Dropout2d(0.3)
 
-        self._weights_channels = torch.zeros(channels // granularity, dtype=float, requires_grad=True, device=Config.device)
+        self._weights_channels = torch.zeros(channels // granularity, dtype=float, requires_grad=True, device=Config.compute_unit)
 
         self._weights_channels_last = None
 

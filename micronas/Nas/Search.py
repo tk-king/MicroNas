@@ -120,8 +120,8 @@ class ArchSearcher():
 
                 n = input_time.size(0)
 
-                input = Variable(input_time, requires_grad=False).float().to(Config.device)
-                target = Variable(target, requires_grad=False).to(Config.device)
+                input = Variable(input_time, requires_grad=False).float().to(Config.compute_unit)
+                target = Variable(target, requires_grad=False).to(Config.compute_unit)
 
                 # Update the architecture
                 for _ in range(num_arch_train_steps):
@@ -131,7 +131,7 @@ class ArchSearcher():
                         input_search = Variable(
                             input_search_time, requires_grad=False).float()
                         target_search = Variable(
-                            target_search, requires_grad=False).to(Config.device)
+                            target_search, requires_grad=False).to(Config.compute_unit)
                         self.arch_optim.zero_grad()
                         input_search = torch.unsqueeze(input_search, dim=1)
                         output = self.network(input_search)

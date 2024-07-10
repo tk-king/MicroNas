@@ -1,6 +1,7 @@
 from torch.utils.data import DataLoader, Dataset
-from micronas.defaultConfig import DefaultConfig, MicroNasMCU
+from micronas.config import Config, MicroNasMCU, DefaultConfig
 from micronas.Nas.Networks.Pytorch.SearchNet import SearchNet
+from micronas.Profiler.LatMemProfiler import set_ignore_latency
 from micronas.Nas.Search import ArchSearcher
 from multipledispatch import dispatch
 
@@ -27,9 +28,20 @@ class MicroNas:
         self.test_dataset = test_dataset
         self.num_classes = num_classes
 
-    def search(self, target_mcu : MicroNasMCU, latency_limit : int , memory_limit : int, **kwargs):
-        config : DefaultConfig = DefaultConfig(**kwargs)
-        batch_size = config.batch_size
+    def search(self, target_mcu : MicroNasMCU, latency_limit : int , memory_limit : int, **kwargs : DefaultConfig):
+
+        Config.mcu = target_mcu
+        for key, value in kwargs.items():
+            if not hasattr(Config, key):
+                raise ValueError(f"Invalid configuration parameter: {key}")
+            setattr(Config, key, value)
+
+        if latency_limit is None:
+            set_ignore_latency(True)
+        else:
+            set_ignore_latency(False)
+
+        batch_size = Config.batch_size
 
         train_dataloader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True)
         print(len(next(iter(train_dataloader))))
@@ -39,6 +51,6 @@ class MicroNas:
 
         dataset_shape = next(iter(train_dataloader))[0].shape
         ts_len, num_sensors = dataset_shape[1:3]
-        nas_net = SearchNet([ts_len, num_sensors], self.num_classes).to(config.train_device)
+        nas_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
         searcher = ArchSearcher(nas_net)
-        searcher.train(train_dataloader, vali_dataloader, config.train_epochs, latency_limit, memory_limit)
+        searcher.train(train_dataloader, vali_dataloader, Config.search_epochs, latency_limit, memory_limit)

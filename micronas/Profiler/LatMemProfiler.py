@@ -268,7 +268,7 @@ def lookup_torch(layer, input_shape, output_shape, input_shape_002=None, only_ou
     if not ignoreMem:
         res_mem = calcMemory(layer_name, layer_dict["modelConfig"]["input_shape"], layer_dict["modelConfig"]["output_shape"], layer_dict["modelConfig"]["kernel_size"], only_outputs=only_outputs)
 
-    return res_lat.to(Config.device), res_mem.to(Config.device)
+    return res_lat.to(Config.compute_unit), res_mem.to(Config.compute_unit)
 
 def lookUp_keras(layer, input_shape, output_shape):
     pass
