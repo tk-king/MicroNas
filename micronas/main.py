@@ -20,6 +20,7 @@ class MicroNas:
         self.vali_dataset = None
         self.test_dataset = test_dataset
         self.num_classes = num_classes
+        self.search_net = None
 
     @dispatch(Dataset, Dataset, Dataset, int)
     def __init_three_datasets(self, train_dataset: Dataset, vali_dataset: Dataset, test_dataset: Dataset, num_classes: int) -> None:
@@ -27,8 +28,9 @@ class MicroNas:
         self.vali_dataset = vali_dataset
         self.test_dataset = test_dataset
         self.num_classes = num_classes
+        self.search_net = None
 
-    def search(self, target_mcu : MicroNasMCU, latency_limit : int , memory_limit : int, **kwargs : DefaultConfig):
+    def search(self, target_mcu : MicroNasMCU, latency_limit, memory_limit : int, **kwargs : DefaultConfig):
 
         Config.mcu = target_mcu
         for key, value in kwargs.items():
@@ -51,6 +53,9 @@ class MicroNas:
 
         dataset_shape = next(iter(train_dataloader))[0].shape
         ts_len, num_sensors = dataset_shape[1:3]
-        nas_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
-        searcher = ArchSearcher(nas_net)
+        self.search_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
+        searcher = ArchSearcher(self.search_net)
         searcher.train(train_dataloader, vali_dataloader, Config.search_epochs, latency_limit, memory_limit)
+
+    def save(self, path: str, name: str) -> None:
+        
