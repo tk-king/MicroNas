@@ -38,7 +38,7 @@ class ChooseNParallel(NAS_Module):
         self._add_parallel = Dyn_Add(num_channels, num_channels, granularity=granularity)
         
         # Weights for the architecture
-        self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=float, device=Config.device), requires_grad=True)
+        self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=float, device=Config.computeUnit), requires_grad=True)
 
         self._weights_op_last = None
 

@@ -93,11 +93,10 @@ class ArchSearcher():
         if callback is None:
             callback = lambda x: None
         
-        print("Starting search: ", f"Dataset: {Config.dataset}, MCU: {Config.mcu}, Epochs: {num_epochs}, Target_lat: {target_lat}, Target_mem: {target_mem}, Eps_decay: {eps_decay}")
         self.criterion = nn.NLLLoss()
         self.arch_schedular = torch.optim.lr_scheduler.CosineAnnealingLR(self.arch_optim, T_max=len(train_queue) * Config.search_epochs, eta_min=0.0008)
 
-        esp_update_step = (eps_decay ** len(train_queue))
+
         assert num_epochs > epochs_pretrain
         # self.network.set_alpha_grad(True)
         objs = AvgrageMeter()
