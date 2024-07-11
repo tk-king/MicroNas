@@ -30,7 +30,11 @@ class MicroNas:
         self.num_classes = num_classes
         self.search_net = None
 
-    def search(self, target_mcu : MicroNasMCU, latency_limit, memory_limit : int, **kwargs : DefaultConfig):
+    def compile(self, search_space, search_strategy):
+        self.search_strategy = search_strategy
+        self.search_sapce = search_space
+
+    def fit(self, target_mcu : MicroNasMCU, latency_limit, memory_limit : int, **kwargs : DefaultConfig):
 
         Config.mcu = target_mcu
         for key, value in kwargs.items():
@@ -46,16 +50,14 @@ class MicroNas:
         batch_size = Config.batch_size
 
         train_dataloader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True)
-        print(len(next(iter(train_dataloader))))
-        
         vali_dataloader = DataLoader(self.vali_dataset, batch_size=batch_size, shuffle=True) if self.vali_dataset else None
-        test_dataloader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False) if self.test_dataset else None
+        # test_dataloader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False) if self.test_dataset else None
 
         dataset_shape = next(iter(train_dataloader))[0].shape
-        ts_len, num_sensors = dataset_shape[1:3]
-        self.search_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
-        searcher = ArchSearcher(self.search_net)
-        searcher.train(train_dataloader, vali_dataloader, Config.search_epochs, latency_limit, memory_limit)
+        # ts_len, num_sensors = dataset_shape[1:3]
+        # self.search_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
+        # searcher = ArchSearcher(self.search_net)
+        self.search_strategy.search(train_dataloader, vali_dataloader, Config.search_epochs, latency_limit, memory_limit)
 
     def save(self, path: str, name: str) -> None:
-        
+        pass

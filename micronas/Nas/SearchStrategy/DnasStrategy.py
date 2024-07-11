@@ -26,6 +26,7 @@ class SearchLogger():
     def appendMemory(self, memory):
         self._memory.append(float(memory.detach().numpy()))
 
+
 class ArchLoss(nn.Module):
     def __init__(self, target_lat, target_mem, lr_lat, lr_mem, logger, nas_weights, max_epoch) -> None:
         super(ArchLoss, self).__init__()
@@ -71,7 +72,7 @@ class ArchLoss(nn.Module):
         return loss, cls_loss, loss_lat, loss_mem, mean_lat, mean_mem
 
 
-class ArchSearcher():
+class DNasStrategy():
 
     def __init__(self, network) -> None:
         self.network = network
@@ -87,7 +88,7 @@ class ArchSearcher():
     def visualize(self, e_len):
         self._logger.visualize(e_len)
 
-    def train(self, train_queue, valid_queue, num_epochs, target_lat, target_mem, callback=None, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
+    def search(self, train_queue, valid_queue, num_epochs, target_lat, target_mem, callback=None, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
         
         if callback is None:
             callback = lambda x: None
