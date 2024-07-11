@@ -40,8 +40,6 @@ class ChooseNParallel(NAS_Module):
         # Weights for the architecture
         self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=Config.tensor_dtype, device=Config.compute_unit), requires_grad=True)
 
-        print("weights_op: ", self._weights_op.shape)
-
         self._weights_op_last = None
 
     def print_nas_weights(self, eps, gumbel, raw):
@@ -148,7 +146,6 @@ class ChooseNParallel(NAS_Module):
             weights_op_softmax = self._weights_op_last
         if inf_type == InferenceType.MAX_WEIGHT:
             weights_op_softmax = weight_softmax(self._weights_op, 1e-9, gumbel=False)
-        print("Weights_op_softmax: ", weights_op_softmax)
         last_layer = None
         for weight in weights_op_softmax:
             maxIdx = torch.argmax(weight)
@@ -299,12 +296,9 @@ class ChooseNParallel_v2(NAS_Module):
             weights_op_softmax = weight_softmax(self._weights_op, 1e-9, gumbel=False)
 
         last_layer = None
-        print("Parallel_N: ", weights_op_softmax)
         for weight, layer in zip(weights_op_softmax, self._layers):
             maxIdx = torch.argmax(weight)
-            print("MaxID: ", maxIdx)
             if maxIdx == 0:
-                print("continue")
                 continue
             l = layer.getKeras(x, getPruned=True, weights=weights_softmax)
             if last_layer is not None:
@@ -314,7 +308,6 @@ class ChooseNParallel_v2(NAS_Module):
         return last_layer
 
     def _getKeras_not_pruned(self, x, weights, inf_type):
-        print("Paralellv2_weights_keras: ", weights)
         weights_softmax = weight_softmax(weights, 1e-9)
         last_layer = None
         for l in self._layers:

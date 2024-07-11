@@ -51,10 +51,8 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 def weight_softmax(weights, eps, hard=False, gumbel=True):
-  print("weight_softmax", weights.shape, eps, hard, gumbel)
   if gumbel:
     res = F.gumbel_softmax(weights, eps, hard=hard)
-    print("res", res)
     return res
   else:
     res = F.softmax(weights / eps)

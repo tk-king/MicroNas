@@ -36,8 +36,6 @@ class SearchNet(nn.Module):
         self._num_red_time = max(1, calcNumLayers(input_dims[0], 2, Config.dim_limit_time))
         self._num_red_ch = max(1, calcNumLayers(input_dims[1], 2, Config.dim_limit_ch))
 
-        print("#Time_reduce: ", self._num_red_time)
-        print("#Sensor_fusion: ", self._num_red_ch)
 
         cur_shape_time = input_dims[0]
         cur_shape_ch = input_dims[1]
