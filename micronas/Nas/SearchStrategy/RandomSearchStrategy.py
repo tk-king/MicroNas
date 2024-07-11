@@ -5,7 +5,7 @@ class RandomSearchStrategy():
         self.search_space = search_space
 
     def search(self, train_dataloader, vali_dataloader, search_epochs, latency_limit, memory_limit, **kwargs):
-      keras_net = self.search_space.getKeras(inf_type=InferenceType.RANDOM)
+      keras_net = self.search_space.getKeras(inf_type=InferenceType.RANDOM, getPruned=True)
       print(keras_net)
 
 

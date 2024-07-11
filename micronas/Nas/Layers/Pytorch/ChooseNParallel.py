@@ -40,6 +40,8 @@ class ChooseNParallel(NAS_Module):
         # Weights for the architecture
         self._weights_op = Variable(1e-3 * torch.randn((parallel, len(self._layers)), dtype=Config.tensor_dtype, device=Config.compute_unit), requires_grad=True)
 
+        print("weights_op: ", self._weights_op.shape)
+
         self._weights_op_last = None
 
     def print_nas_weights(self, eps, gumbel, raw):

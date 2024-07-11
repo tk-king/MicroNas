@@ -51,10 +51,15 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 def weight_softmax(weights, eps, hard=False, gumbel=True):
+  print("weight_softmax", weights.shape, eps, hard, gumbel)
   if gumbel:
-    return F.gumbel_softmax(weights, eps, hard=hard)
+    res = F.gumbel_softmax(weights, eps, hard=hard)
+    print("res", res)
+    return res
   else:
-    return F.softmax(weights / eps)
+    res = F.softmax(weights / eps)
+    print(weights, res, eps)
+    return res
 
 
 # def random_one_hot_like(input):
