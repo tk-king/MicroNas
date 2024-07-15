@@ -56,7 +56,6 @@ def weight_softmax(weights, eps, hard=False, gumbel=True):
     return res
   else:
     res = F.softmax(weights / eps)
-    print(weights, res, eps)
     return res
 
 

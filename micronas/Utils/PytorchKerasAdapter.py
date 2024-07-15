@@ -20,34 +20,22 @@ class PytorchKerasAdapter(keras.utils.Sequence):
 
     def __getitem__(self, index):
 
-        # Try to obtain data
-        # When dataloader is done, generate a new one
         try:
             input_time, target = next(self.iter)
         except StopIteration:
             self.iter = iter(self.gen)
             input_time, target = next(self.iter)
 
-        # Convert pytorch format to keras format
-        # Keras: (batch, length, channels)
-        # Pytorch: (batch, channels, length)
-
         input_time = input_time.numpy().astype(np.float32)
 
         if self.expand_dim:
             input_time = np.expand_dims(input_time, self.expand_dim)
 
-        # if self.freq:
-        #     input_freq = torch.moveaxis(input_freq, 1, -1).numpy().astype(np.float32)
-        target = to_categorical(
-            target.numpy(), num_classes=self.num_classes, dtype=Config.tensor_dtype)
+        target = to_categorical(target.numpy(), num_classes=self.num_classes)
 
         result = ()
         if self.time:
             result += (input_time, )
-
-        # if self.freq:
-        #     result += (input_freq, )
 
         result += (target, )
 

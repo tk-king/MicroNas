@@ -53,9 +53,9 @@ def saveProfiling(path):
     print(f"Saved {len(configs)} operations for profiling")
 
 
-def profiledOp(base: keras.layers.Layer):
+def profiledOp(base: keras.layers.Layer, *args, **kwargs):
     base_call = base.call
-    def new_call(inputs, training=None):
+    def new_call(inputs, training=None, *args, **kwargs):
         if profiling:
             config = base.get_config()
             if isinstance(inputs, list): # For mul or add

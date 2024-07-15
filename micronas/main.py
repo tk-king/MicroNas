@@ -57,7 +57,8 @@ class MicroNas:
         # ts_len, num_sensors = dataset_shape[1:3]
         # self.search_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
         # searcher = ArchSearcher(self.search_net)
-        self.search_strategy.search(train_dataloader, vali_dataloader, Config.search_epochs, latency_limit, memory_limit)
+        search_res = self.search_strategy.search(train_dataloader, vali_dataloader, latency_limit, memory_limit)
+        return search_res
 
     def save(self, path: str, name: str) -> None:
         pass
