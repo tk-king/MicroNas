@@ -1,0 +1,1 @@
+python main.py --data-name gesture --shuffle --model-type deepconvlstm_attn --seed 2 --difference --filtering --mixup-argmax --root-path ../../../datasets --filter-scaling-factor 1.0 --mixup-probability 0.5 --random-augmentation-prob 0.5 --random-augmentation-config random_aug_all.yaml --batch-size 128 --exp-mode Given

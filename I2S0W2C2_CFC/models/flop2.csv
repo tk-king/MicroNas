@@ -1,0 +1,13 @@
+,dcl_macs,dcl_params,DeepSense_macs,DeepSense_params,GlobalFusion_macs,GlobalFusion_params,Attend_macs,Attend_params,ALAE_macs,ALAE_params,IfConv_macs,IfConv_params,CrossAttn_macs,CrossAttn_params
+pamap2,401.66 MMac,745.43 k,90.83 MMac,456.72 k,69.18 MMac,355.41 k,369.22 MMac,668.12 k,297.52 MMac,413.52 k,140.26 MMac,171.13 k,19.38 MMac,124.88 k
+dsads,576.15 MMac,1.63 M,106.97 MMac,623.51 k,108.61 MMac,431.89 k,543.88 MMac,1.33 M,454.44 MMac,855.96 k,205.82 MMac,248.29 k,29.12 MMac,187.8 k
+dg,124.16 MMac,448.45 k,35.24 MMac,323.65 k,18.99 MMac,308.03 k,120.55 MMac,444.87 k,98.77 MMac,265.03 k,51.03 MMac,144.39 k,6.28 MMac,103.56 k
+rw,439.46 MMac,1.63 M,57.77 MMac,278.34 k,59.82 MMac,373.19 k,421.76 MMac,1.33 M,363.55 MMac,855.24 k,164.02 MMac,247.57 k,23.06 MMac,185.64 k
+hapt,124.16 MMac,449.74 k,35.24 MMac,324.3 k,26.19 MMac,313.16 k,120.55 MMac,446.16 k,98.77 MMac,265.68 k,51.03 MMac,145.04 k,6.28 MMac,103.56 k
+motionsense,163.19 MMac,547.27 k,38.53 MMac,324.23 k,33.97 MMac,330.57 k,155.62 MMac,519.11 k,129.32 MMac,314.44 k,51.0 MMac,143.78 k,8.09 MMac,110.48 k
+skoda,661.47 MMac,1.14 M,115.79 MMac,457.48 k,94.11 MMac,473.16 k,605.4 MMac,962.0 k,488.45 MMac,609.61 k,169.95 MMac,180.91 k,31.89 MMac,152.52 k
+GesHome,34.63 MMac,450.51 k,22.8 MMac,275.15 k,16.37 MMac,294.23 k,38.19 MMac,446.93 k,38.58 MMac,266.07 k,18.93 MMac,145.43 k,2.14 MMac,102.7 k
+lsign,103.23 MMac,649.44 k,50.75 MMac,457.57 k,32.15 MMac,378.21 k,102.4 MMac,596.71 k,93.67 MMac,365.54 k,34.05 MMac,151.88 k,5.53 MMac,117.96 k
+emgg,206.8 MMac,449.1 k,72.11 MMac,455.05 k,37.35 MMac,327.88 k,196.57 MMac,445.51 k,154.33 MMac,265.35 k,83.45 MMac,144.71 k,10.43 MMac,104.14 k
+hhar,141.85 MMac,350.66 k,65.87 MMac,454.66 k,36.74 MMac,306.76 k,139.88 MMac,371.66 k,106.6 MMac,216.13 k,56.42 MMac,131.5 k,7.52 MMac,97.23 k
+mhealth,241.26 MMac,744.65 k,45.11 MMac,325.26 k,38.76 MMac,333.64 k,226.53 MMac,667.34 k,190.41 MMac,413.13 k,87.39 MMac,170.74 k,11.78 MMac,124.3 k
