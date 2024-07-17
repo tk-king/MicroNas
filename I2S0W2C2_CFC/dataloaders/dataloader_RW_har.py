@@ -7,7 +7,7 @@ import zipfile
 from io import BytesIO
 
 
-from dataloaders.dataloader_base import BASE_DATA
+from I2S0W2C2_CFC.dataloaders.dataloader_base import BASE_DATA
 
 # ========================================    REAL_WORLD_HAR_DATA        =============================
 class REAL_WORLD_HAR_DATA(BASE_DATA):

@@ -16,7 +16,7 @@ from models.deepSense import DeepSense
 from models.MixerMLP import FFTMIXER_HAR_Model
 from models.visionmixer import Vision_MIXER
 
-from dataloaders.utils import PrepareWavelets,FiltersExtention
+from I2S0W2C2_CFC.dataloaders.utils import PrepareWavelets,FiltersExtention
 # ------- import other packages ----------------
 import torch
 import torch.nn as nn

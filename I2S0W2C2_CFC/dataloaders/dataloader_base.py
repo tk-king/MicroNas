@@ -13,7 +13,6 @@ from skimage.transform import resize
 freq1 = 0.3
 freq2 = 20
 
-
 # ========================================       Data loader Base class               =============================
 class BASE_DATA():
 
@@ -48,6 +47,10 @@ class BASE_DATA():
                                        ---> []
 
         """
+
+        for arg in vars(args):
+            print(arg, getattr(args, arg))
+
         self.root_path              = args.root_path
         self.freq_save_path         = args.freq_save_path
         self.window_save_path       = args.window_save_path
@@ -55,7 +58,7 @@ class BASE_DATA():
 
         window_save_path = os.path.join(self.window_save_path,self.data_name)
         if not os.path.exists(window_save_path):
-            os.mkdir(window_save_path)
+            os.makedirs(window_save_path)
         self.window_save_path       = window_save_path
         self.representation_type    = args.representation_type
         #assert self.data_name in []
@@ -71,6 +74,7 @@ class BASE_DATA():
         self.windowsize             = args.windowsize
         self.drop_transition        = args.drop_transition
         self.wavelet_function       = args.wavelet_function
+        self.sliding_window_factor  = args.sliding_window_factor
         #self.wavelet_filtering      = args.wavelet_filtering
         #self.number_wavelet_filtering = args.number_wavelet_filtering
 
@@ -405,58 +409,59 @@ class BASE_DATA():
         Each window consists of three parts: sub_ID , start_index , end_index
         The sub_ID ist used for train test split, if the subject train test split is applied
         """
-        if os.path.exists(os.path.join(self.window_save_path,
-                                       "{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, 
-                                                                                        flag, 
-                                                                                        self.drop_transition,
-                                                                                        self.windowsize))):
-            print("-----------------------Sliding file are generated -----------------------")
-            with open(os.path.join(self.window_save_path,
-                                   "{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, 
-                                                                                    flag, 
-                                                                                    self.drop_transition,
-                                                                                    self.windowsize)), 'rb') as handle:
-                window_index = pickle.load(handle)
+        # if os.path.exists(os.path.join(self.window_save_path,
+        #                                "{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, 
+        #                                                                                 flag, 
+        #                                                                                 self.drop_transition,
+        #                                                                                 self.windowsize))):
+        #     print("-----------------------Sliding file are generated -----------------------")
+        #     with open(os.path.join(self.window_save_path,
+        #                            "{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, 
+        #                                                                             flag, 
+        #                                                                             self.drop_transition,
+        #                                                                             self.windowsize)), 'rb') as handle:
+        #         window_index = pickle.load(handle)
+        # else:
+        print("----------------------- Get the Sliding Window -------------------")
+
+        data_y = data_y.reset_index()
+        data_x["activity_id"] = data_y["activity_id"]
+
+        if self.drop_transition:
+            data_x['act_block'] = ((data_x['activity_id'].shift(1) != data_x['activity_id']) | (data_x['sub_id'].shift(1) != data_x['sub_id'])).astype(int).cumsum()
         else:
-            print("----------------------- Get the Sliding Window -------------------")
+            data_x['act_block'] = (data_x['sub_id'].shift(1) != data_x['sub_id']).astype(int).cumsum()
 
-            data_y = data_y.reset_index()
-            data_x["activity_id"] = data_y["activity_id"]
+        freq         = self.freq   
+        windowsize   = self.windowsize
 
-            if self.drop_transition:
-                data_x['act_block'] = ((data_x['activity_id'].shift(1) != data_x['activity_id']) | (data_x['sub_id'].shift(1) != data_x['sub_id'])).astype(int).cumsum()
-            else:
-                data_x['act_block'] = (data_x['sub_id'].shift(1) != data_x['sub_id']).astype(int).cumsum()
+        print("sliding step: ", int(self.sliding_window_factor * self.windowsize))
+        if flag == "train":
+            displacement = int(self.sliding_window_factor * self.windowsize)
+            #drop_for_augmentation = int(0.2 * self.windowsize)
+        elif flag == "test":
+            displacement = int(self.sliding_window_factor * self.windowsize)
+            #drop_for_augmentation = 1
 
-            freq         = self.freq   
-            windowsize   = self.windowsize
+        window_index = []
+        for index in data_x.act_block.unique():
 
-            if flag == "train":
-                displacement = int(0.1 * self.windowsize)
-                #drop_for_augmentation = int(0.2 * self.windowsize)
-            elif flag == "test":
-                displacement = int(0.1 * self.windowsize)
-                #drop_for_augmentation = 1
+            temp_df = data_x[data_x["act_block"]==index]
+            assert len(temp_df["sub_id"].unique()) == 1
+            sub_id = temp_df["sub_id"].unique()[0]
+            start = temp_df.index[0]# + drop_for_augmentation 
+            end   = start+windowsize
 
-            window_index = []
-            for index in data_x.act_block.unique():
+            while end <= temp_df.index[-1]+1:# + drop_for_augmentation :
 
-                temp_df = data_x[data_x["act_block"]==index]
-                assert len(temp_df["sub_id"].unique()) == 1
-                sub_id = temp_df["sub_id"].unique()[0]
-                start = temp_df.index[0]# + drop_for_augmentation 
-                end   = start+windowsize
+                if temp_df.loc[start:end-1,"activity_id"].mode().loc[0] not in self.drop_activities:
+                    window_index.append([sub_id, start, end])
 
-                while end <= temp_df.index[-1]+1:# + drop_for_augmentation :
+                start = start + displacement
+                end   = start + windowsize
 
-                    if temp_df.loc[start:end-1,"activity_id"].mode().loc[0] not in self.drop_activities:
-                        window_index.append([sub_id, start, end])
-
-                    start = start + displacement
-                    end   = start + windowsize
-
-            with open(os.path.join(self.window_save_path,"{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, flag, self.drop_transition,windowsize)), 'wb') as handle:
-                pickle.dump(window_index, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        with open(os.path.join(self.window_save_path,"{}_{}_drop_trans_{}_windowsize{}.pickle".format(self.data_name, flag, self.drop_transition,windowsize)), 'wb') as handle:
+            pickle.dump(window_index, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         return window_index
 
@@ -467,12 +472,12 @@ class BASE_DATA():
             os.mkdir(save_path)
 
         if flag == "train":
-            displacement = int(0.5 * self.windowsize)
+            displacement = int(self.sliding_window_factor * self.windowsize)
             slidingwindows = self.train_slidingwindows
             self.train_freq_path = os.path.join(save_path,"diff_{}_window_{}_step_{}_drop_trans_{}".format(self.difference, self.windowsize,displacement, self.drop_transition))
             freq_path = self.train_freq_path
         elif flag == "test":
-            displacement = int(0.1 * self.windowsize)
+            displacement = int(self.sliding_window_factor * self.windowsize)
             slidingwindows = self.test_slidingwindows
             self.test_freq_path = os.path.join(save_path,"diff_{}_window_{}_step_{}_drop_trans_{}".format(self.difference, self.windowsize, displacement, self.drop_transition))
             freq_path = self.test_freq_path

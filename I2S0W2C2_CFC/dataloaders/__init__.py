@@ -4,7 +4,8 @@ import numpy as np
 import os
 import pickle
 from tqdm import tqdm
-#from dataloaders.utils import PrepareWavelets,FiltersExtention
+import gc
+#from I2S0W2C2_CFC.dataloaders.utils import PrepareWavelets,FiltersExtention
 # ----------------- har -----------------
 """
 from .dataloader_uci_har import UCI_HAR_DATA
@@ -123,6 +124,7 @@ class data_set(Dataset):
         self.flag = flag
         self.load_all = args.load_all
         self.data_x = dataset.normalized_data_x
+        print("data_x len: ", len(self.data_x))
         self.data_y = dataset.data_y
         if flag in ["train","vali"] or self.args.exp_mode in ["SOCV","FOCV"]:
             #print("get train_slidingwindows ")
@@ -161,6 +163,7 @@ class data_set(Dataset):
             self.window_index = dataset.test_window_index
             print("Test data number : ", len(self.window_index))  
             
+        print("window_length:", len(self.window_index))
             
         all_labels = list(np.unique(dataset.data_y))
         to_drop = list(dataset.drop_activities)
@@ -197,20 +200,39 @@ class data_set(Dataset):
 
         if self.args.representation_type == "time":
 
-            if self.args.sample_wise ==True:
-                sample_x = np.array(self.data_x.iloc[start_index:end_index, 1:-1].apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x))))
+            if self.args.sample_wise:
+                # Create a copy of the data slice for sample-wise processing
+                data_slice_x = self.data_x.iloc[start_index:end_index, 1:-1].copy()
+
+                # Normalize the data sample-wise
+                sample_x = np.array(data_slice_x.apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x))))
             else:
-                sample_x = self.data_x.iloc[start_index:end_index, 1:-1].values
+                # Create a copy of the data slice for the whole sample
+                data_slice_x = self.data_x.iloc[start_index:end_index, 1:-1].copy()
 
-            sample_y = self.class_transform[self.data_y.iloc[start_index:end_index].mode().loc[0]]
-            #print(sample_x.shape)
+                # Convert to NumPy array
+                sample_x = data_slice_x.to_numpy()
 
+            # Create a copy of the label slice
+            data_slice_y = self.data_y.iloc[start_index:end_index].copy()
 
-            sample_x = np.expand_dims(sample_x,0)
-            #print(sample_x.shape)
-            return sample_x, sample_y,sample_y
+            # Calculate mode and transform class
+            sample_y_mode = data_slice_y.mode().iloc[0]
+            sample_y = self.class_transform[sample_y_mode]
+
+            # Clean up memory
+            del data_slice_x
+            del data_slice_y
+            del sample_y_mode
+            gc.collect()
+
+            # Expand dimensions
+            sample_x = np.expand_dims(sample_x, 0)
+
+            return sample_x, sample_y, sample_y
 
         elif self.args.representation_type == "freq":
+            raise Exception("Need to fix this")
 
             if self.load_all:
                     sample_x = self.data_freq[self.freq_file_name[index]]
@@ -223,7 +245,7 @@ class data_set(Dataset):
             return sample_x, sample_y,sample_y
 
         else:
-
+            raise Exception("Need to fix this")
             if self.args.sample_wise ==True:
                 sample_ts_x = np.array(self.data_x.iloc[start_index:end_index, 1:-1].apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x))))
             else:

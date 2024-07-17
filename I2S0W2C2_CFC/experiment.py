@@ -20,7 +20,7 @@ from utils import EarlyStopping, adjust_learning_rate_class
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
-from dataloaders.augmentation import RandomAugment, mixup_data
+from I2S0W2C2_CFC.dataloaders.augmentation import RandomAugment, mixup_data
 import random
 import os
 from ptflops import get_model_complexity_info

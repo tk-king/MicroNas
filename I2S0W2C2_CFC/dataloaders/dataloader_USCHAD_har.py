@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 import scipy.io as sio
-from dataloaders.dataloader_base import BASE_DATA
+from I2S0W2C2_CFC.dataloaders.dataloader_base import BASE_DATA
 
 # ================================= USC_HAD_HAR_DATA ============================================
 class USC_HAD_HAR_DATA(BASE_DATA):

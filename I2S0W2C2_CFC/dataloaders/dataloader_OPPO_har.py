@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from dataloaders.dataloader_base import BASE_DATA
+from I2S0W2C2_CFC.dataloaders.dataloader_base import BASE_DATA
 # TODO the cols ! name
 # ========================================      Opportunity_HAR_DATA         =============================
 class Opportunity_HAR_DATA(BASE_DATA):
