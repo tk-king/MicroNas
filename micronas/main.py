@@ -4,6 +4,7 @@ from micronas.Nas.Networks.Pytorch.SearchNet import SearchNet
 from micronas.Profiler.LatMemProfiler import set_ignore_latency
 from micronas.Nas.Search import ArchSearcher
 from multipledispatch import dispatch
+import logging
 
 class MicroNas:
     def __init__(self, *args):
@@ -13,6 +14,8 @@ class MicroNas:
             self.__init_three_datasets(*args)
         else:
             raise ValueError("Invalid number of arguments for MicroNas initialization")
+        self.logger = logging.getLogger(__name__)
+
 
     @dispatch(Dataset, Dataset, int)
     def __init_two_datasets(self, train_dataset: Dataset, test_dataset: Dataset, num_classes: int) -> None:
@@ -31,8 +34,21 @@ class MicroNas:
         self.search_net = None
 
     def compile(self, search_space, search_strategy):
+
+        ts_len, num_sensors = self.train_dataset[0][0].shape[1:3]
+        self.logger.info(f"ts_len: {ts_len}, num_sensors: {num_sensors}")
+
+        train_dataloader = DataLoader(self.train_dataset, batch_size=Config.batch_size, shuffle=True)
+        vali_dataloader = DataLoader(self.vali_dataset, batch_size=Config.batch_size, shuffle=True)
+        test_dataloader = DataLoader(self.test_dataset, batch_size=Config.batch_size, shuffle=True)
+
+
         self.search_strategy = search_strategy
+        self.search_strategy.compile(ts_len, num_sensors, self.num_classes, train_dataloader, vali_dataloader, test_dataloader)
         self.search_sapce = search_space
+        self.search_sapce.compile(ts_len, num_sensors, self.num_classes)    
+
+
 
     def fit(self, target_mcu : MicroNasMCU, latency_limit, memory_limit : int, **kwargs : DefaultConfig):
 
@@ -47,17 +63,12 @@ class MicroNas:
         else:
             set_ignore_latency(False)
 
-        batch_size = Config.batch_size
 
-        train_dataloader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True)
-        vali_dataloader = DataLoader(self.vali_dataset, batch_size=batch_size, shuffle=True) if self.vali_dataset else None
         # test_dataloader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False) if self.test_dataset else None
-
-        dataset_shape = next(iter(train_dataloader))[0].shape
         # ts_len, num_sensors = dataset_shape[1:3]
         # self.search_net = SearchNet([ts_len, num_sensors], self.num_classes).to(Config.compute_unit)
         # searcher = ArchSearcher(self.search_net)
-        search_res = self.search_strategy.search(train_dataloader, vali_dataloader, latency_limit, memory_limit)
+        search_res = self.search_strategy.search(latency_limit, memory_limit)
         return search_res
 
     def save(self, path: str, name: str) -> None:

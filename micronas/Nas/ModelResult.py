@@ -1,8 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from keras.models import Model
 from typing import Dict
 import json
 import os
+from micronas.Utils.JsonEncoder import JsonEncoder
 
 @dataclass
 class ModelResult:
@@ -12,24 +13,22 @@ class ModelResult:
     latency: float
     memory: float
 
-    accuracy: float
-    f1: float
-    
-    accuracy_quant: float
-    f1_quant: float
-    
     config: Dict
+
+    eval_keras: Dict = field(default_factory=dict)
+    eval_tf_lite: Dict = field(default_factory=dict)
+    
 
     def save(self, path: str):
         # Ensure the directory exists
         os.makedirs(os.path.dirname(path), exist_ok=True)
         
         # Save the Keras model
-        model_path = path + '_model.h5'
+        model_path = os.path.join(path, 'model.h5')
         self.keras_model.save(model_path)
 
         # Save the TFLite model
-        tflite_path = path + '_tflite.tflite'
+        tflite_path = os.path.join(path, 'model.tflite')
         with open(tflite_path, 'wb') as f:
             f.write(self.tf_lite_model)
         
@@ -37,14 +36,15 @@ class ModelResult:
         result_data = {
             'latency': self.latency,
             'memory': self.memory,
-            'accuracy': self.accuracy,
-            'f1': self.f1,
-            'accuracy_quant': self.accuracy_quant,
-            'f1_quant': self.f1_quant,
+            'eval_keras': self.eval_keras,
+            'eval_tf_lite': self.eval_tf_lite,
             'config': self.config
         }
+
+        for key, value in result_data.items():
+            print(type(value))
         
         # Save the attributes as a JSON file
-        json_path = path + '_result.json'
+        json_path = os.path.join(path, 'result.json')
         with open(json_path, 'w') as f:
-            json.dump(result_data, f, indent=4)
+            json.dump(result_data, f, indent=4, cls=JsonEncoder)

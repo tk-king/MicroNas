@@ -19,8 +19,11 @@ import numpy as np
 
 
 class SearchNet(nn.Module):
-    def __init__(self, input_dims, num_classes) -> None:
+    def __init__(self) -> None:
         super().__init__()
+
+    def compile(self, ts_len, num_sensors, num_classes):
+        input_dims = (ts_len, num_sensors)
         self._input_dims = input_dims
         self._num_classes = num_classes
         self._net_scale_factor = Config.net_scale_factor
@@ -61,6 +64,7 @@ class SearchNet(nn.Module):
             GlobalAveragePooling(),
             LogSoftMax()
         ])
+
 
     def get_nas_weights(self):
         res = []

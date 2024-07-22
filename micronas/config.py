@@ -2,7 +2,7 @@
 import torch
 from typing import TypedDict
 from enum import Enum
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from pydantic import BaseModel
 
 class Device(Enum):
@@ -43,7 +43,7 @@ class DefaultConfig():
     dim_limit_ch :int = 5
 
     # ArchSearcher Settings
-    search_epochs : int = 1
+    search_epochs : int = 100
     # train_epochs : int = 100
     retrain_epochs : int = 100
     ignore_latency : bool = False
@@ -53,6 +53,8 @@ class DefaultConfig():
     port : str = "/dev/cu.usbmodem111403"
     mcu : MicroNasMCU = MicroNasMCU.NiclaSense
 
+    def to_serializable_dict(self):
+        return asdict(self)
 
 
 # class ConfigClass:

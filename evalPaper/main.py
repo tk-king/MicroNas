@@ -31,23 +31,27 @@ def micro_nas_search(dataset, cv, search_strategy, mcu, target_lat, target_mem):
     test_dataloader = diskData.test_dataloader
     vali_dataloader = diskData.vali_dataloader
 
-    NUM_CLASSES = 10
+    num_classes_lookup = {
+        "skodar": 10
+    }
+
+    NUM_CLASSES = num_classes_lookup[dataset]
 
     logger.info("Length of train_dataloader: %s", len(train_dataloader))
     logger.info("Length of test_dataloader: %s", len(test_dataloader))
     logger.info("Length of vali_dataloader: %s", len(vali_dataloader))
 
     model = MicroNas(train_dataloader, vali_dataloader, test_dataloader, NUM_CLASSES)
-    search_space = SearchNet(input_dims=(64, 30), num_classes=NUM_CLASSES)
+    search_space = SearchNet()
     if search_strategy == "dnas":
         search_strategy = DNasStrategy(search_space)
     if search_strategy == "random":
-        search_strategy = RandomSearchStrategy(search_space, arch_tries=3)
+        search_strategy = RandomSearchStrategy(search_space, arch_tries=1)
     # search_strategy = DNasStrategy(search_space)
 
     model.compile(search_space, search_strategy)
 
-    models = model.fit(MicroNasMCU.NUCLEOF446RE, latency_limit=target_lat, memory_limit=target_mem, search_epochs=Config.search_epochs, retrain_epochs=Config.search_epochs, compute_unit="cpu")
+    models = model.fit(MicroNasMCU.NUCLEOF446RE, latency_limit=target_lat, memory_limit=target_mem, search_epochs=Config.search_epochs, retrain_epochs=Config.retrain_epochs, compute_unit="cpu")
     return models
 
 if __name__ == '__main__':
