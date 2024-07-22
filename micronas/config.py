@@ -43,7 +43,7 @@ class DefaultConfig():
     dim_limit_ch :int = 5
 
     # ArchSearcher Settings
-    search_epochs : int = 100
+    search_epochs : int = 1
     # train_epochs : int = 100
     retrain_epochs : int = 100
     ignore_latency : bool = False

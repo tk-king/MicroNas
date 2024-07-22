@@ -75,6 +75,8 @@ class BASE_DATA():
         self.drop_transition        = args.drop_transition
         self.wavelet_function       = args.wavelet_function
         self.sliding_window_factor  = args.sliding_window_factor
+        self.exp_mode               = args.exp_mode
+        print("EXP MODE: ", self.exp_mode)
         #self.wavelet_filtering      = args.wavelet_filtering
         #self.number_wavelet_filtering = args.number_wavelet_filtering
 
@@ -119,6 +121,7 @@ class BASE_DATA():
 
 
 
+        print(f"----------------------- {self.exp_mode} -------------------")
         # ======================= Generate the Sliding window for Train/Test =================================
         # train/test is different by the sliding step.
         self.train_slidingwindows = self.get_the_sliding_index(self.data_x.copy(), self.data_y.copy(), "train")
@@ -162,6 +165,8 @@ class BASE_DATA():
         else:
             self.num_of_cv = 1
             self.index_of_cv = 0
+    
+        print("The sliding step is: ", int(self.sliding_window_factor * self.windowsize))
 
     def update_train_val_test_keys(self):
         """
@@ -292,7 +297,7 @@ class BASE_DATA():
         y_of_all_windows  = []
         # get all labels of all windows
         for index in self.train_window_index:
-
+        
             start_index = self.train_slidingwindows[index][1]
             end_index = self.train_slidingwindows[index][2]
 
@@ -435,7 +440,6 @@ class BASE_DATA():
         freq         = self.freq   
         windowsize   = self.windowsize
 
-        print("sliding step: ", int(self.sliding_window_factor * self.windowsize))
         if flag == "train":
             displacement = int(self.sliding_window_factor * self.windowsize)
             #drop_for_augmentation = int(0.2 * self.windowsize)

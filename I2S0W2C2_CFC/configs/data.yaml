@@ -318,7 +318,8 @@ skodar:
   sampling_freq: 100
   num_classes: 10
   num_channels: 30
-  window_seconds: 1.28
+  # window_seconds: 1.28
+  window_seconds: 0.64
   sensors:
   - acc_x_1
   - acc_y_1

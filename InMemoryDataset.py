@@ -36,14 +36,15 @@ class InMemoryDataset(Dataset):
     
 
 class DiskData:
-    def __init__(self, dataset_name, train_dataloader, test_dataloader, vali_dataloader):
+    def __init__(self, dataset_name, cv, train_dataloader, test_dataloader, vali_dataloader):
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
         self.vali_dataloader = vali_dataloader
         self.dataset_name = dataset_name
+        self.cv = cv
 
     def save(self):
-        path = os.path.join(BASE_DATASET_FOLDER, self.dataset_name)
+        path = os.path.join(BASE_DATASET_FOLDER, self.dataset_name, str(self.cv))
         if not os.path.exists(path):
             os.makedirs(path)
         train_path = os.path.join(path, "train.pkl")
@@ -54,8 +55,8 @@ class DiskData:
         self.vali_dataloader.save(vali_path)
     
     @staticmethod
-    def load(dataset_name):
-        path = os.path.join(BASE_DATASET_FOLDER, dataset_name)
+    def load(dataset_name, cv):
+        path = os.path.join(BASE_DATASET_FOLDER, dataset_name, str(cv))
         if os.path.exists(path) == False:
             raise Exception(f"Dataset {dataset_name} not found")
         train_path = os.path.join(path, "train.pkl")
@@ -64,4 +65,4 @@ class DiskData:
         train_dataloader = InMemoryDataset.load(train_path)
         test_dataloader = InMemoryDataset.load(test_path)
         vali_dataloader = InMemoryDataset.load(vali_path)
-        return DiskData(dataset_name, train_dataloader, test_dataloader, vali_dataloader)
+        return DiskData(dataset_name, cv, train_dataloader, test_dataloader, vali_dataloader)

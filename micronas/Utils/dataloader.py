@@ -30,7 +30,7 @@ def loadDataset(data_name="ucihar"):
 
     exp_modes = {
         "ucihar": "Given",
-        "rw": "Given",
+        "rw": "Given", 
         "oppo": "FOCV",
         "skodar": "FOCV",
         "skodal": "FOCV",

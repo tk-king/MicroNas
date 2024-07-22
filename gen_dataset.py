@@ -100,8 +100,8 @@ parser.add_argument("--sliding-window-factor", dest="sliding_window_factor", def
 #                     default="time", type=str, help='Set the data type')
 
 args = parser.parse_args()
-if args.data_name == "skodar":
-    args.exp_mode = "SOCV"
+# if args.data_name == "skodar":
+#     args.exp_mode = "SOCV"
 
 config_files = open("I2S0W2C2_CFC/configs/data.yaml", "r")
 data_config = yaml.load(config_files, Loader=yaml.FullLoader)
@@ -154,6 +154,7 @@ def extract_data(data):
     return time_x, freq_x, data_y
 
 for iter in tqdm(range(num_of_cv)):
+    print(f"-------------------{iter}-------------------")
     dataset.update_train_val_test_keys()
 
     weighted_sampler = False
@@ -162,12 +163,12 @@ for iter in tqdm(range(num_of_cv)):
     test_loader   = get_data(args, dataset, flag = 'test', weighted_sampler = weighted_sampler)
 
     train_dataset = InMemoryDataset(*extract_data(train_loader))
-    vali_dataset = InMemoryDataset(*extract_data(val_loader))
     test_dataset = InMemoryDataset(*extract_data(test_loader))
+    vali_dataset = InMemoryDataset(*extract_data(val_loader))
 
     # train_dataset.save(f"{args.data_name}_train_{iter}.pkl")
     # vali_dataset.save(f"{args.data_name}_vali_{iter}.pkl")
     # test_dataset.save(f"{args.data_name}_test_{iter}.pkl")
 
-    dataset_disk = DiskData(args.data_name, train_dataset, test_dataset, vali_dataset)
+    dataset_disk = DiskData(args.data_name, iter, train_dataset, test_dataset, vali_dataset)
     dataset_disk.save()

@@ -88,7 +88,7 @@ class DNasStrategy():
     def visualize(self, e_len):
         self._logger.visualize(e_len)
 
-    def search(self, train_queue, valid_queue, num_epochs, target_lat, target_mem, callback=None, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
+    def search(self, train_queue, valid_queue, target_lat, target_mem, callback=None, num_epochs=20, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
         
         if callback is None:
             callback = lambda x: None
@@ -114,7 +114,7 @@ class DNasStrategy():
             print("Epoch: ", epoch + 1, " / ", num_epochs)
             objs.reset()
             top1.reset()
-            for step, (input_time, target) in enumerate(pbar := tqdm(train_queue)):
+            for step, (input_time, input_freq, target) in enumerate(pbar := tqdm(train_queue)):
                 # input_time = torch.swapaxes(input_time, 1, 2)
                 self.network.train()
 
@@ -126,14 +126,15 @@ class DNasStrategy():
                 # Update the architecture
                 for _ in range(num_arch_train_steps):
                     if epoch - epochs_pretrain >= 0:
-                        input_search_time, target_search = next(
+                        input_search_time, input_search_freq, target_search = next(
                             iter(valid_queue))
                         input_search = Variable(
                             input_search_time, requires_grad=False).float()
                         target_search = Variable(
                             target_search, requires_grad=False).to(Config.compute_unit)
                         self.arch_optim.zero_grad()
-                        input_search = torch.unsqueeze(input_search, dim=1)
+                        # input_search = torch.unsqueeze(input_search, dim=1)
+                        # print(input_search.shape)
                         output = self.network(input_search)
                         loss, loss_ce, loss_lat, loss_mem, mean_lat, mean_mem = self._arch_loss(output, target_search, epoch)
                         # loss = loss_ce + loss_lat + loss_mem
@@ -157,7 +158,7 @@ class DNasStrategy():
 
                 # Update the network parameters
                 self.optimizer.zero_grad()
-                input = torch.unsqueeze(input, dim=1)
+                # input = torch.unsqueeze(input, dim=1)
                 logits, _, _ = self.network(input)
                 loss = self.criterion(logits, target)
                 loss.backward()

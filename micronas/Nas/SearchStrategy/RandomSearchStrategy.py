@@ -1,28 +1,27 @@
 from micronas.Nas.Networks.Pytorch.SearchModule import InferenceType
 from micronas.Nas.SearchStrategy.SearchStrategy import SearchStrategy
 from micronas.Utils.PytorchKerasAdapter import PytorchKerasAdapter
+from micronas.Nas.ModelResult import ModelResult
 from micronas.config import Config
+from micronas.TfLite.structure import TfLiteModel
+from micronas.Nas.eval import eval_keras, eval_keras_quant
+from typing import List
 import torch
-
+import logging
 
 class RandomSearchStrategy(SearchStrategy):
     def __init__(self, search_space, arch_tries=20):
         self.search_space = search_space
         self.arch_tries = arch_tries
+        self.logger = logging.getLogger(__name__)
 
     def _fit_keras(self, model, train_dataloader):
-        train_dataloader_keras = PytorchKerasAdapter(train_dataloader, 6, expand_dim=3)
+        train_dataloader_keras = PytorchKerasAdapter(train_dataloader, 10)
+        self.logger.info("Len keras dataloader: %s", len(train_dataloader_keras))
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        print("shape:", next(iter(train_dataloader_keras))[0].shape)
         model.fit(train_dataloader_keras, epochs=Config.retrain_epochs)
 
-    def _eval_keras(self, model, vali_dataloader):
-        vali_dataloader_keras = PytorchKerasAdapter(vali_dataloader, 6, expand_dim=3)
-        eval = model.evaluate(vali_dataloader_keras)
-        accuracy = eval[1]
-        return accuracy
-
-    def search(self, train_dataloader, vali_dataloader, latency_limit, memory_limit, **kwargs):
+    def search(self, train_dataloader, vali_dataloader, latency_limit, memory_limit, **kwargs) -> List[ModelResult]:
         ctr = 0
         models = []
         while ctr < self.arch_tries:
@@ -34,15 +33,32 @@ class RandomSearchStrategy(SearchStrategy):
                 continue
             if memory_limit is not None and mem > memory_limit:
                 continue
-
-            keras_model = self.search_space.getKeras(getPruned=True, inf_type=InferenceType.MAX_WEIGHT, batch_size=None)
+            try:
+                keras_model = self.search_space.getKeras(getPruned=True, inf_type=InferenceType.MAX_WEIGHT, batch_size=None)
+            except Exception as e:
+                continue
             self._fit_keras(keras_model, train_dataloader)
-            accuracy = self._eval_keras(keras_model, vali_dataloader)
-            models.append({"model": keras_model, "accuracy": accuracy, "latency": lat, "memory": mem})
+            
+            train_dataloader_keras = PytorchKerasAdapter(train_dataloader, 10)
+            tf_lite = TfLiteModel(keras_model, (ts_len, num_sensors, 1), train_dataloader_keras)
+
+
+            eval_keras = eval_keras(keras_model, train_dataloader, vali_dataloader, test_dataloader)
+            eval_tf_lite = eval_keras_quant(tf_lite, train_dataloader, vali_dataloader, test_dataloader)
+
+
+            # accuracy = self._eval_keras(keras_model, vali_dataloader)
+
+
+
+
+            models.append(ModelResult(
+                model=keras_model,
+                accuracy=accuracy,
+                latency=lat,
+                memory=mem
+            ))
             ctr += 1
-    
-        maxModel = max(models, key=lambda x: x["accuracy"])
-        print(maxModel)
         return models
 
 
