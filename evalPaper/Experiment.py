@@ -4,12 +4,12 @@ import os
 import argparse
 import json
 import datetime
+from othermodels.trainEval import train_eval
 
 BASE_DIR = "evalPaper/experiments"
 
 class Experiment():
     def __init__(self, args):
-        assert args.model in ["micronas"]
         self.model = args.model
         self.dataset = args.dataset
         self.search_strategy = args.search_strategy
@@ -26,7 +26,9 @@ class Experiment():
     def run(self):
         if self.model == "micronas":
             self.models = micro_nas_search(self.dataset, self.cv, self.search_strategy, self.mcu, self.target_lat, self.target_mem)
-
+        else:
+            train_eval(self.dataset, self.cv, self.model)
+        
 
 
     def save(self):
