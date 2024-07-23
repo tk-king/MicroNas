@@ -16,6 +16,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 from micronas.config import Config, Device
+import logging
+from glob import glob
+
+logger = logging.getLogger(__name__)
 
 
 def build_model_from_config(config):
@@ -103,9 +107,12 @@ paths = []
 #         "tmp_look_up/20220530-154456/records.json",
 #         "tmp_look_up/20220601-092546/records.json"]
 
-print(f"Profiler set for device {Config.mcu}")
+print(f"Profiler set for device {Config.mcu}, {Config.mcu.name}")
+# files = glob("lookUp/" + Config.mcu.name + "**.json")
+# print(files)
+
 paths = []
-for subdir, dirs, files in os.walk(f"lookUp/{Config.mcu}"):
+for subdir, dirs, files in os.walk(f"lookUp/{Config.mcu.name}"):
     for file in files:
         print("Loading file: ", file)
         f_path = os.path.join(subdir, file)
@@ -275,6 +282,8 @@ def lookUp_keras(layer, input_shape, output_shape):
 
 
 def loadConfigs(path):
+    print("Loading configs from: ", path)
+    print("MCU: ", Config.mcu)
     rec = Recorder("lookUp/" + Config.mcu, "firmware", tflmBackend.CMSIS)
     with open(path, "r") as f:
         configs = json.loads(f.read())

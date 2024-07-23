@@ -38,7 +38,7 @@ class RandomSearchStrategy(SearchStrategy):
         while ctr < self.arch_tries:
             fake_input = torch.randn((1, 1, self.ts_len, self.num_sensors))
             lat, mem = self.search_space(fake_input, inf_type=InferenceType.RANDOM)[1:]
-
+            print("Latency: %s, Memory: %s", lat, mem)
 
             if latency_limit is not None and lat > latency_limit:
                 continue
@@ -66,7 +66,7 @@ class RandomSearchStrategy(SearchStrategy):
                 latency=lat,
                 memory=mem,
                 config=Config,
-                eval_keras=eval_keras_res,
+                eval=eval_keras_res,
                 eval_tf_lite=eval_tf_lite
             ))
 

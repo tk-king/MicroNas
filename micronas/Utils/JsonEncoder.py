@@ -1,7 +1,7 @@
 import torch
 import json
-from micronas import MicroNas, MicroNasMCU
-from micronas.config import DefaultConfig
+from micronas import MicroNas
+from micronas.config import DefaultConfig, MicroNasMCU
 
 
 class JsonEncoder(json.JSONEncoder):

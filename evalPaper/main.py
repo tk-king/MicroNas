@@ -19,8 +19,7 @@ def micro_nas_search(dataset, cv, search_strategy, mcu, target_lat, target_mem):
         raise ValueError("Invalid MCU")
     
 
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger("main")
     ch = logging.StreamHandler()
     ch.setFormatter(ColorLoggerFormatter())

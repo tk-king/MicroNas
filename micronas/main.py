@@ -58,10 +58,7 @@ class MicroNas:
                 raise ValueError(f"Invalid configuration parameter: {key}")
             setattr(Config, key, value)
 
-        if latency_limit is None:
-            set_ignore_latency(True)
-        else:
-            set_ignore_latency(False)
+        set_ignore_latency(Config.ignore_latency)
 
 
         # test_dataloader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False) if self.test_dataset else None

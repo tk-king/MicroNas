@@ -4,6 +4,24 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.preprocessing import MultiLabelBinarizer
 import tensorflow as tf
+import torch
+
+def eval_torch(model, train_dataloader, vali_dataloader, test_dataloader):
+    res = {}
+    loaders = [train_dataloader, vali_dataloader, test_dataloader]
+    names = ["train", "vali", "test"]
+    with torch.no_grad():
+        for dataloader, data_name in zip(loaders, names):
+            pred, true = [], []
+            for input_time, input_freq, target in tqdm(dataloader):
+                max_pred = torch.argmax(model(input_time), dim=1)
+                pred.extend(max_pred)
+                true.extend(target)
+            acc = accuracy_score(true, pred)
+            f1 = f1_score(true, pred, average="macro")
+            res[f"acc_{data_name}"] = acc
+            res[f"f1_{data_name}"] = f1
+        return res
 
 def eval_keras(model, num_classes, train_dataloader, vali_dataloader, test_dataloader):
 
