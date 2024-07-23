@@ -17,7 +17,7 @@ class ComputeUnit(Enum):
 
 class MicroNasMCU(Enum):
     NiclaSense = "NiclaSense"
-    # NUCLEO = "NUCLEO"
+    NUCLEOL552ZEQ = "NUCLEOL552ZEQ"
     PORTENTA = "PROTENTA"
     NUCLEOF446RE  = "NUCLEOF446RE"
 

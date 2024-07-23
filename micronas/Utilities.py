@@ -15,7 +15,7 @@ from collections.abc import Mapping
 
 import tensorflow as tf
 
-from micronas.config import Config, Device
+from micronas.config import Config, MicroNasMCU
 
 
 class RecorderError(Enum):
@@ -69,18 +69,20 @@ def torch_to_keras_shape(shape):
     shape = list(shape)
     return [shape[0]] + shape[2:4] + [shape[1]] 
 
-def cyclesToMillis(cycles):
+def cyclesToMillis(cycles, mcu=None):
+
+    used_mcu = mcu if mcu is not None else Config.mcu
     freq = None
-    if Config.mcu == "NICLA":
+    if used_mcu == MicroNasMCU.NiclaSense:
         freq = 64000000
-    if Config.mcu == "NUCLEO":
+    if used_mcu == MicroNasMCU.NUCLEOL552ZEQ:
         freq = 80000000
-    if Config.mcu == Device.NUCLEOF446RE.name:
+    if used_mcu == MicroNasMCU.NUCLEOF446RE:
         freq = 180000000
     return (cycles / freq) * 1000  # in Millis
 
 
-def computeLayerTimes(timingStr):
+def computeLayerTimes(timingStr, mcu=None):
     timingStr = timingStr.replace("TIMING", "").replace(" ", "")
     timingArray = list(literal_eval(timingStr))
     print("t_arr: ", len(timingArray))
@@ -93,7 +95,7 @@ def computeLayerTimes(timingStr):
         for elm in searchArr:
             if elm[0] == serachElm[0]:
                 ret[1] = abs(serachElm[1] - elm[1])
-                ret[2] = cyclesToMillis(abs(serachElm[1] - elm[1]))
+                ret[2] = cyclesToMillis(abs(serachElm[1] - elm[1]), mcu)
                 searchArr.remove(elm)
                 return [ret] + compute(searchArr)
         print(f"Elm not found: {serachElm[0]}")

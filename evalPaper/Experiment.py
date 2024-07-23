@@ -8,6 +8,7 @@ from othermodels.trainEval import train_eval
 import logging
 from typing import List
 from micronas.Nas.ModelResult import ModelResult
+from micronas.config import MicroNasMCU
 
 BASE_DIR = "evalPaper/experiments"
 
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     argparser.add_argument("--dataset", type=str)
     argparser.add_argument("--cv", type=int)
     argparser.add_argument("--search_strategy", type=str)
-    argparser.add_argument("--mcu", type=str)
+    argparser.add_argument("--mcu", type=MicroNasMCU)
     argparser.add_argument("--target_lat", type=float, default=None)
     argparser.add_argument("--target_mem", type=float, default=None)
     args = argparser.parse_args()

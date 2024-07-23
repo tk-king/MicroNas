@@ -14,6 +14,7 @@ from os.path import join as joinPaths
 from pathlib import Path
 from datetime import datetime
 import random
+import os
 
 from micronas.config import Config
 
@@ -54,21 +55,23 @@ class Recorder:
         # Vars to keep the data during recording
         self._data_dict = []
 
-    def recordLookUp(self, keras_model, config):
+    def recordLookUp(self, keras_model, config, mcu, port):
         tmp_record = {}
         tflmModel = TfLiteModel(keras_model, config["input_shape"])
-        with open("models/latestRecorderModel.tflite", "wb") as f:
+        directory = "models"
+        os.makedirs(directory, exist_ok=True)
+        path = os.path.join(directory, "latestRecorderModel.tflite")
+        with open(path, "wb") as f:
             f.write(tflmModel.byte_model)
         configureFirmware(tflmModel.byte_model, self._firmware_path, Config.mcu, self._tflm_backend)
         flashOutput, error = flashNicla(self._firmware_path)
 
         # Only read the output if no error has occured
         if error == RecorderError.NOERROR:
-            execOutput, error, errorText = readOutput()
+            execOutput, error, errorText = readOutput(port=port)
             if (error != RecorderError.NOERROR):
                 tmp_record["errorText"] = errorText
 
-        print(error.name)
         if error == RecorderError.FLASHERROR:
             print(flashOutput)
         tmp_record["modelConfig"] = config
@@ -89,7 +92,7 @@ class Recorder:
             if not isinstance(line, str):
                 continue
             if line.startswith("TIMING"):
-                tmp_record["timing"] = self._processTimingInformation(line)
+                tmp_record["timing"] = self._processTimingInformation(line, mcu=mcu)
             if line.startswith("MEMORY"):
                 tmp_record["memory"] = self._processMemoryInformation(line)
         self._data_dict.append(tmp_record)
@@ -158,8 +161,8 @@ class Recorder:
         self.data_dict = []
 
 
-    def _processTimingInformation(self, line):
-        timings = computeLayerTimes(line)
+    def _processTimingInformation(self, line, mcu=None):
+        timings = computeLayerTimes(line, mcu)
         tmpTimingDict = []
         for [type, cpuCycles, millis] in timings:
             tmpTimingDict.append({"type": type, "cpuCycles": cpuCycles, "millis": millis})

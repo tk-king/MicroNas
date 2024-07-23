@@ -1,9 +1,8 @@
 from enum import Enum
 import os
-from micronas.config import Device
 from micronas.Utilities import RecorderError, tflmBackend
 from micronas.Communication.arduinoCommunicator import ArduinoCommunicator, ERROR_IDENTIFIER, FINISH_FLAG
-from micronas.config import Config
+from micronas.config import Config, MicroNasMCU
 
 def readOutput(port=Config.port):
     lines = []
@@ -37,22 +36,21 @@ def readOutput(port=Config.port):
 def flashNicla(firmwarePath):
     import subprocess as sp
     import os
-    print(os.getcwd())
-    print()
     flashCommnad = f"pio run -t upload --project-dir firmware"
-    child = sp.Popen(flashCommnad, stdout=sp.PIPE, shell=True)
+    # stdout=sp.Pipe for output
+    child = sp.Popen(flashCommnad, stdout=None, shell=True)
     output = child.communicate()[0]
     rc = child.returncode
     return output, RecorderError.FLASHERROR if rc else RecorderError.NOERROR
 
-def getConfig(mcu: Device, lib: tflmBackend):
+def getConfig(mcu: MicroNasMCU, lib: tflmBackend):
 
-    mcu = Device(mcu)
+    mcu = MicroNasMCU(mcu)
     lib = tflmBackend(lib)
     
-    envs = {Device.NICLA: "[env:nicla_sense_me]", Device.NUCLEO: "[env:nucleo_l552ze_q]", Device.NUCLEOF446RE: "[env:nucleo_f446re]"}
-    platforms = {Device.NICLA: "nordicnrf52@9.4.0", Device.NUCLEO: "ststm32", Device.NUCLEOF446RE: "ststm32"}
-    boards = {Device.NICLA: "nicla_sense_me", Device.NUCLEO: "nucleo_l552ze_q", Device.NUCLEOF446RE: "nucleo_f446re"}
+    envs = {MicroNasMCU.NiclaSense: "[env:nicla_sense_me]", MicroNasMCU.NUCLEOL552ZEQ: "[env:nucleo_l552ze_q]", MicroNasMCU.NUCLEOF446RE: "[env:nucleo_f446re]"}
+    platforms = {MicroNasMCU.NiclaSense: "nordicnrf52@9.4.0", MicroNasMCU.NUCLEOL552ZEQ: "ststm32", MicroNasMCU.NUCLEOF446RE: "ststm32"}
+    boards = {MicroNasMCU.NiclaSense: "nicla_sense_me", MicroNasMCU.NUCLEOL552ZEQ: "nucleo_l552ze_q", MicroNasMCU.NUCLEOF446RE: "nucleo_f446re"}
 
     libs = {tflmBackend.STOCK: "tflite_micro", tflmBackend.CMSIS: "tflite_micro_stock"}
 
@@ -63,7 +61,7 @@ def getConfig(mcu: Device, lib: tflmBackend):
 
 
 
-def configureFirmware(byteModel, firmwarePath, mcu: Device, tflmB: tflmBackend):
+def configureFirmware(byteModel, firmwarePath, mcu: MicroNasMCU, tflmB: tflmBackend):
     byteString = ','.join([hex(x) for x in byteModel])
     if not os.path.exists(firmwarePath):
         open(firmwarePath, 'w').close()
@@ -78,7 +76,7 @@ def configureFirmware(byteModel, firmwarePath, mcu: Device, tflmB: tflmBackend):
     #     allLines = f_read.readlines()
 
     with open(os.path.join(firmwarePath, "platformio.ini"), "w") as f:
-        f.write(getConfig(Device(mcu), tflmB))
+        f.write(getConfig(mcu, tflmB))
 
     # with open(os.path.join(firmwarePath, "platformio.ini"), "w") as f:
     #     resLines = []

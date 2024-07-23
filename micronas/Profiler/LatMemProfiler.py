@@ -107,25 +107,9 @@ paths = []
 #         "tmp_look_up/20220530-154456/records.json",
 #         "tmp_look_up/20220601-092546/records.json"]
 
-print(f"Profiler set for device {Config.mcu}, {Config.mcu.name}")
+
 # files = glob("lookUp/" + Config.mcu.name + "**.json")
 # print(files)
-
-paths = []
-for subdir, dirs, files in os.walk(f"lookUp/{Config.mcu.name}"):
-    for file in files:
-        print("Loading file: ", file)
-        f_path = os.path.join(subdir, file)
-        print(f_path)
-        if f_path.endswith(".json"):
-            paths.append(f_path)
-print(paths)
-
-_lookUp = {}
-
-ignoreLat = False
-ignoreMem = False
-
 
 def set_ignore_latency(ignoreLatency=False, ignoreMemory=False):
     global ignoreLat
@@ -162,39 +146,63 @@ def buildKey(rec):
         raise NotImplementedError()
     return key
 
+ignoreLat = False
+ignoreMem = False
 
-for p in paths:
-    with open(p, "r") as f:
-        estimates = json.loads(f.read())
-        estimates = [DotDict(x) for x in estimates]
-    for est in estimates:
-        layer_name = est["modelConfig"]["name"]
-        if hasattr(est, "error") and est.error != RecorderError.NOERROR.name:
-            _lookUp[buildKey(est)] = 50000000000;
-            continue;
-        if "batch_normalization" in layer_name:
-            _lookUp[buildKey(est)] = est.timing[2]["cpuCycles"] + \
-                est.timing[3]["cpuCycles"]
-            continue
-        if len(est.timing) == 5:
-            _lookUp[buildKey(est)] = sum([l["cpuCycles"]
-                                          for l in est.timing[-3:]])
-            continue
-        if len(est.timing) == 4 and "dense" in layer_name:
-            _lookUp[buildKey(est)] = sum([l["cpuCycles"]
-                                          for l in est.timing[-2:]])
-            continue
-        if len(est.timing) == 4 and "conv2d" in layer_name:
-            _lookUp[buildKey(est)] = sum([l["cpuCycles"]
-                                          for l in est.timing[-2:]])
-            continue
-        if len(est.timing) != 3:
-            print("not included: ", layer_name)
-            continue
+def load_profilings(mcu):
+    print(f"Profiler set for device {mcu}, {mcu.name}")
+    paths = []
+    for subdir, dirs, files in os.walk(f"lookUp/{mcu.name}"):
+        for file in files:
+            print("Loading file: ", file)
+            f_path = os.path.join(subdir, file)
+            print(f_path)
+            if f_path.endswith(".json"):
+                paths.append(f_path)
+    print(paths)
 
-        _lookUp[buildKey(est)] = est.timing[2]["cpuCycles"]
+    _lookUp = {}
 
-print(f"Loaded LatencyPredictor with {len(_lookUp)} samples")
+    for p in paths:
+        with open(p, "r") as f:
+            estimates = json.loads(f.read())
+            estimates = [DotDict(x) for x in estimates]
+        for est in estimates:
+            layer_name = est["modelConfig"]["name"]
+            if hasattr(est, "error") and est.error != RecorderError.NOERROR.name:
+                _lookUp[buildKey(est)] = 50000000000;
+                continue;
+            if "batch_normalization" in layer_name:
+                _lookUp[buildKey(est)] = est.timing[2]["cpuCycles"] + \
+                    est.timing[3]["cpuCycles"]
+                continue
+            if len(est.timing) == 5:
+                _lookUp[buildKey(est)] = sum([l["cpuCycles"]
+                                            for l in est.timing[-3:]])
+                continue
+            if len(est.timing) == 4 and "dense" in layer_name:
+                _lookUp[buildKey(est)] = sum([l["cpuCycles"]
+                                            for l in est.timing[-2:]])
+                continue
+            if len(est.timing) == 4 and "conv2d" in layer_name:
+                _lookUp[buildKey(est)] = sum([l["cpuCycles"]
+                                            for l in est.timing[-2:]])
+                continue
+            if len(est.timing) != 3:
+                print("not included: ", layer_name)
+                continue
+
+            _lookUp[buildKey(est)] = est.timing[2]["cpuCycles"]
+
+    print(f"Loaded LatencyPredictor with {len(_lookUp)} samples")
+    return _lookUp
+
+_lookUp = load_profilings(Config.mcu)
+
+
+
+
+
 
 
 def calcMemory(type, input_shape, output_shape, kernel_shape=None, only_outputs=False):
@@ -281,10 +289,11 @@ def lookUp_keras(layer, input_shape, output_shape):
     pass
 
 
-def loadConfigs(path):
+def loadConfigs(path, mcu, port):
     print("Loading configs from: ", path)
-    print("MCU: ", Config.mcu)
-    rec = Recorder("lookUp/" + Config.mcu, "firmware", tflmBackend.CMSIS)
+    print("MCU: ", mcu)
+    _lookUp = load_profilings(mcu)
+    rec = Recorder("lookUp/" + mcu.name, "firmware", tflmBackend.CMSIS)
     with open(path, "r") as f:
         configs = json.loads(f.read())
         configs = [DotDict(x) for x in configs]
@@ -297,7 +306,7 @@ def loadConfigs(path):
             continue
         print(key)
         model, _, _ = build_model_from_config(cfg)
-        rec.recordLookUp(model, cfg)
+        rec.recordLookUp(model, cfg, mcu, port)
         keys_profiled.append(key)
     rec.finalize()
 

@@ -65,6 +65,9 @@ class SearchNet(nn.Module):
             LogSoftMax()
         ])
 
+        fake_input = torch.randn((1, 1, *input_dims))
+        self(fake_input)
+
 
     def get_nas_weights(self):
         res = []
