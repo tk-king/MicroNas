@@ -44,7 +44,7 @@ def micro_nas_search(dataset, cv, search_strategy, mcu, target_lat, target_mem):
     if search_strategy == "dnas":
         search_strategy = DNasStrategy(search_space)
     if search_strategy == "random":
-        search_strategy = RandomSearchStrategy(search_space, arch_tries=1)
+        search_strategy = RandomSearchStrategy(search_space, arch_tries=20)
     # search_strategy = DNasStrategy(search_space)
 
     model.compile(search_space, search_strategy)

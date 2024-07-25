@@ -1,0 +1,39 @@
+{
+    "latency": 1550.8953857421875,
+    "memory": 44160.0,
+    "eval": {
+        "acc_train": 0.9741159014096117,
+        "f1_train": 0.9579850174912081,
+        "acc_vali": 0.9606824925816023,
+        "f1_vali": 0.9451402077643853,
+        "acc_test": 0.9649747699614128,
+        "f1_test": 0.9507630154402442
+    },
+    "eval_tf_lite": {
+        "acc_quant_train": 0.9669441925645041,
+        "f1_quant_train": 0.9478061953801197,
+        "acc_quant_vali": 0.9488130563798219,
+        "f1_quant_vali": 0.9321878747793578,
+        "acc_quant_test": 0.9560700504600772,
+        "f1_quant_test": 0.9401174461652657
+    },
+    "config": {
+        "batch_size": 64,
+        "compute_unit": "cpu",
+        "tensor_dtype": "torch.float32",
+        "time_reduce_ch": 16,
+        "time_reduce_granularity": 4,
+        "ch_reduce_ch": 64,
+        "ch_reduce_granularity": 8,
+        "net_scale_factor": 2,
+        "retrain_epochs": 100,
+        "retrain_patience": 10,
+        "dim_limit_time": 16,
+        "dim_limit_ch": 5,
+        "search_epochs": 100,
+        "ignore_latency": false,
+        "ignore_memory": false,
+        "port": "/dev/cu.usbmodem111403",
+        "mcu": "NiclaSense"
+    }
+}

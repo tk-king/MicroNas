@@ -1,0 +1,9 @@
+{
+    "model": "micronas",
+    "dataset": "skodar",
+    "cv": 0,
+    "search_strategy": "random",
+    "mcu": "NiclaSense",
+    "target_lat": 10000.0,
+    "target_mem": null
+}

@@ -8,6 +8,7 @@ import logging
 from typing import List
 from micronas.Nas.ModelResult import ModelResult
 from micronas.config import MicroNasMCU, Config
+from micronas.Utils.JsonEncoder import JsonEncoder
 
 BASE_DIR = "evalPaper/experiments"
 
@@ -45,7 +46,7 @@ class Experiment():
             model.save(self.dir, i)
         args_dict = vars(self.args)
         with open(os.path.join(self.dir, "args.json"), "w") as f:
-            json.dump(args_dict, f, indent=4)
+            json.dump(args_dict, f, indent=4, cls=JsonEncoder)
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
@@ -54,8 +55,8 @@ if __name__ == '__main__':
     argparser.add_argument("--cv", type=int)
     argparser.add_argument("--search_strategy", type=str)
     argparser.add_argument("--mcu", type=MicroNasMCU)
-    argparser.add_argument("--target_lat", type=float, default=None)
-    argparser.add_argument("--target_mem", type=float, default=None)
+    argparser.add_argument("--target-lat", type=float, default=None)
+    argparser.add_argument("--target-mem", type=float, default=None)
     args = argparser.parse_args()
 
     logger = logging.getLogger(__name__)

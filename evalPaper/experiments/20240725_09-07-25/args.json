@@ -1,0 +1,6 @@
+{
+    "model": "micronas",
+    "dataset": "skodar",
+    "cv": 0,
+    "search_strategy": "random",
+    "mcu": 
