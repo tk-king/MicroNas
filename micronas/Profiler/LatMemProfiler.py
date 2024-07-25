@@ -195,9 +195,16 @@ def load_profilings(mcu):
             _lookUp[buildKey(est)] = est.timing[2]["cpuCycles"]
 
     print(f"Loaded LatencyPredictor with {len(_lookUp)} samples")
+
+    with open("currentLookup.json", "w") as f:
+        for k, v in _lookUp.items():
+            f.write(f"{k}: {v}\n")
+
     return _lookUp
 
-_lookUp = load_profilings(Config.mcu)
+def load_latencies(mcu):
+    global _lookUp
+    _lookUp = load_profilings(mcu)
 
 
 

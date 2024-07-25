@@ -1,5 +1,5 @@
 from InMemoryDataset import InMemoryDataset, DiskData
-from micronas import MicroNas, MicroNasMCU
+from micronas import MicroNas
 from micronas.Nas.Networks.Pytorch.SearchNet import SearchNet
 from micronas.Nas.SearchStrategy.DnasStrategy import DNasStrategy
 from micronas.Nas.SearchStrategy.RandomSearchStrategy import RandomSearchStrategy
@@ -7,18 +7,17 @@ from micronas.Nas.SearchStrategy.DnasStrategy import DNasStrategy
 import logging
 from ColorLoggerFormatter import ColorLoggerFormatter
 from micronas.config import Config
+from micronas.Profiler.LatMemProfiler import load_latencies
 
 def micro_nas_search(dataset, cv, search_strategy, mcu, target_lat, target_mem):
     # Configure logging
     if search_strategy not in ["random", "dnas"]:
         raise ValueError("Invalid search strategy")
     
-    print(mcu)
-    print(MicroNasMCU.__members__)
-    if mcu not in MicroNasMCU.__members__:
-        raise ValueError("Invalid MCU")
+    Config.mcu = mcu
+    load_latencies(mcu)
     
-
+    
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger("main")
     ch = logging.StreamHandler()
@@ -50,7 +49,7 @@ def micro_nas_search(dataset, cv, search_strategy, mcu, target_lat, target_mem):
 
     model.compile(search_space, search_strategy)
 
-    models = model.fit(MicroNasMCU.NUCLEOF446RE, latency_limit=target_lat, memory_limit=target_mem, search_epochs=Config.search_epochs, retrain_epochs=Config.retrain_epochs, compute_unit="cpu")
+    models = model.fit(mcu, latency_limit=target_lat, memory_limit=target_mem, search_epochs=Config.search_epochs, retrain_epochs=Config.retrain_epochs, compute_unit="cpu")
     return models
 
 if __name__ == '__main__':

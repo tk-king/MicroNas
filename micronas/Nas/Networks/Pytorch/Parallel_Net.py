@@ -1,11 +1,8 @@
-from inspect import stack
-from importlib_metadata import requires
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from micronas.Nas.Layers.Pytorch.Common import Add, Conv2D, Dyn_Add, Dyn_Conv2D, GlobalAveragePooling, SoftMax, Id, Zero
-from micronas.Profiler.LatMemProfiler import set_ignore_latency
+from micronas.Nas.Layers.Pytorch.Common import Add, Conv2D, Dyn_Conv2D, GlobalAveragePooling, SoftMax, Id, Zero
 from micronas.Nas.Utils import calcNumLayers
 from micronas.Nas.Networks.Pytorch.SearchModule import InferenceType, NAS_Module
 
@@ -14,7 +11,6 @@ from math import ceil
 
 import tensorflow.keras as keras
 import tensorflow.keras.layers as L
-import tensorflow.keras.backend as K
 
 import numpy as np
 

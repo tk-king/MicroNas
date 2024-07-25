@@ -538,13 +538,6 @@ class Dyn_Add(nn.Module):
         lat_acc = torch.sum(self._latencies * weights)
         mem_acc = torch.sum(self._memories * weights)
 
-
-        # for j ,w in enumerate(weights):
-        #     add_shape = [1, (j+1) * self._granularity, *res.shape[-2:]]
-        #     lat, mem = lookup_torch("add", add_shape, add_shape)
-        #     lat_acc += lat * w
-        #     mem_acc += mem * w
-
         
         self._compiled = True
         return res, lat_acc, mem_acc

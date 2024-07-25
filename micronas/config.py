@@ -28,13 +28,13 @@ class DefaultConfig():
     tensor_dtype : torch.dtype = torch.float32
 
     # SearchSpace Settings
-    time_reduce_ch : int = 8
-    time_reduce_granularity : int = 1
+    time_reduce_ch : int = 16
+    time_reduce_granularity : int = 4
 
-    ch_reduce_ch : int = 16
-    ch_reduce_granularity : int = 1
+    ch_reduce_ch : int = 64
+    ch_reduce_granularity : int = 8
 
-    net_scale_factor : int = 0
+    net_scale_factor : int = 2
 
     retrain_epochs : int = 200
     retrain_patience : int = 10
@@ -51,7 +51,7 @@ class DefaultConfig():
 
     # MCU Settings
     port : str = "/dev/cu.usbmodem111403"
-    mcu : MicroNasMCU = MicroNasMCU.NiclaSense
+    mcu : MicroNasMCU = None
 
     def to_serializable_dict(self):
         return asdict(self)

@@ -70,15 +70,14 @@ def torch_to_keras_shape(shape):
     return [shape[0]] + shape[2:4] + [shape[1]] 
 
 def cyclesToMillis(cycles, mcu=None):
+    freq_dict = {
+        MicroNasMCU.NiclaSense: 64000000,
+        MicroNasMCU.NUCLEOL552ZEQ: 80000000,
+        MicroNasMCU.NUCLEOF446RE: 180000000
+    }
 
     used_mcu = mcu if mcu is not None else Config.mcu
-    freq = None
-    if used_mcu == MicroNasMCU.NiclaSense:
-        freq = 64000000
-    if used_mcu == MicroNasMCU.NUCLEOL552ZEQ:
-        freq = 80000000
-    if used_mcu == MicroNasMCU.NUCLEOF446RE:
-        freq = 180000000
+    freq = freq_dict[used_mcu]
     return (cycles / freq) * 1000  # in Millis
 
 

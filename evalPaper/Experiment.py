@@ -1,4 +1,3 @@
-from micronas import MicroNas
 from main import micro_nas_search
 import os
 import argparse
@@ -8,7 +7,7 @@ from othermodels.trainEval import train_eval
 import logging
 from typing import List
 from micronas.Nas.ModelResult import ModelResult
-from micronas.config import MicroNasMCU
+from micronas.config import MicroNasMCU, Config
 
 BASE_DIR = "evalPaper/experiments"
 
@@ -59,7 +58,8 @@ if __name__ == '__main__':
     argparser.add_argument("--target_mem", type=float, default=None)
     args = argparser.parse_args()
 
-
+    logger = logging.getLogger(__name__)
+    logger.info(f"Running experiment with args: {args}")
     exp = Experiment(args)
     exp.run()
     exp.save()

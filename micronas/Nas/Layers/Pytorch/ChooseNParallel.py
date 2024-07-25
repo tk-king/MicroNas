@@ -1,22 +1,17 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from micronas.Nas.Layers.Pytorch.Common import Add, Conv2D, Dyn_Add, Dyn_Conv2D, GlobalAveragePooling, LogSoftMax, Id, Zero
-from micronas.Profiler.LatMemProfiler import set_ignore_latency
-from micronas.Nas.Utils import calcNumLayers, random_one_hot_like
+from micronas.Nas.Layers.Pytorch.Common import Dyn_Add
+from micronas.Nas.Utils import random_one_hot_like
 from micronas.Nas.Networks.Pytorch.SearchModule import InferenceType, NAS_Module
 from torch.autograd import Variable
 
 from micronas.Nas.Utils import weight_softmax
 from micronas.config import Config
 
-from math import ceil
 
 
-import tensorflow.keras as keras
 import tensorflow.keras.layers as L
-import tensorflow.keras.backend as K
 
 import numpy as np
 
