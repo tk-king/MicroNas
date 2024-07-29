@@ -15,7 +15,7 @@ class SearchStrategy:
     def extractArch():
         pass
     
-    def compile(self, ts_len, num_sensors, num_classes, train_dataloader, vali_dataloader, test_dataloader):
+    def compile(self, ts_len, num_sensors, num_classes, train_dataloader, vali_dataloader, test_dataloader, search_network):
         self.ts_len = ts_len
         self.num_sensors = num_sensors
         self.num_classes = num_classes

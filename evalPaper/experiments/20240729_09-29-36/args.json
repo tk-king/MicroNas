@@ -1,0 +1,9 @@
+{
+    "model": "fftmixer",
+    "dataset": "skodar",
+    "cv": 0,
+    "search_strategy": null,
+    "mcu": null,
+    "target_lat": null,
+    "target_mem": null
+}

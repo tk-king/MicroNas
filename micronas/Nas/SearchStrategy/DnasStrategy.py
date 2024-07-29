@@ -3,6 +3,7 @@ from torch import nn
 from torch.autograd import Variable
 from micronas.Nas.Utils import AvgrageMeter, accuracy
 from tqdm import tqdm
+from micronas.Nas.SearchStrategy.SearchStrategy import SearchStrategy
 
 from micronas.config import Config
 
@@ -72,29 +73,33 @@ class ArchLoss(nn.Module):
         return loss, cls_loss, loss_lat, loss_mem, mean_lat, mean_mem
 
 
-class DNasStrategy():
+class DNasStrategy(SearchStrategy):
 
     def __init__(self, network) -> None:
-        self.network = network
-        self.arch_optim = torch.optim.SGD(network.get_nas_weights(), lr=0.36)
+        self._logger = SearchLogger()
+        super(DNasStrategy, self).__init__(network)
+
+    def compile(self, ts_len, num_sensors, num_classes, train_dataloader, vali_dataloader, test_dataloader, search_net):
+        self.network = search_net
+        self.arch_optim = torch.optim.SGD(search_net.get_nas_weights(), lr=0.36)
         self.arch_schedular = None
         self.criterion = None
-        self.optimizer = torch.optim.Adam(network.parameters())
+        self.optimizer = torch.optim.Adam(search_net.parameters())
         self._alpha_lat = 1
         self._alpha_mem = 1
         self._arch_loss = None
-        self._logger = SearchLogger()
+        super(DNasStrategy, self).compile(ts_len, num_sensors, num_classes, train_dataloader, vali_dataloader, test_dataloader, search_net)
 
     def visualize(self, e_len):
         self._logger.visualize(e_len)
 
-    def search(self, train_queue, valid_queue, target_lat, target_mem, callback=None, num_epochs=20, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
+    def search(self, latency_limit, memory_limit, callback=None, num_epochs=20, epochs_pretrain=0, num_arch_train_steps=1, eps_decay=0.995, alpha_lat=1, alpha_mem=1):
         
         if callback is None:
             callback = lambda x: None
         
         self.criterion = nn.NLLLoss()
-        self.arch_schedular = torch.optim.lr_scheduler.CosineAnnealingLR(self.arch_optim, T_max=len(train_queue) * Config.search_epochs, eta_min=0.0008)
+        self.arch_schedular = torch.optim.lr_scheduler.CosineAnnealingLR(self.arch_optim, T_max=len(self.train_dataloader) * Config.search_epochs, eta_min=0.0008)
 
 
         assert num_epochs > epochs_pretrain
@@ -105,16 +110,15 @@ class DNasStrategy():
         self._nas_weights = self.network.get_nas_weights()
 
         self._eps_decay = eps_decay
-        self._arch_loss = ArchLoss(target_lat, target_mem, alpha_lat, alpha_mem, self._logger, self._nas_weights, num_epochs)
+        self._arch_loss = ArchLoss(latency_limit, memory_limit, alpha_lat, alpha_mem, self._logger, self._nas_weights, num_epochs)
 
         self.network.train()
-        num_steps = len(train_queue)
         ctr = 0
         for epoch in range(num_epochs):
             print("Epoch: ", epoch + 1, " / ", num_epochs)
             objs.reset()
             top1.reset()
-            for step, (input_time, input_freq, target) in enumerate(pbar := tqdm(train_queue)):
+            for step, (input_time, input_freq, target) in enumerate(pbar := tqdm(self.train_dataloader)):
                 # input_time = torch.swapaxes(input_time, 1, 2)
                 self.network.train()
 
@@ -127,7 +131,7 @@ class DNasStrategy():
                 for _ in range(num_arch_train_steps):
                     if epoch - epochs_pretrain >= 0:
                         input_search_time, input_search_freq, target_search = next(
-                            iter(valid_queue))
+                            iter(self.vali_dataloader))
                         input_search = Variable(
                             input_search_time, requires_grad=False).float()
                         target_search = Variable(
@@ -137,22 +141,6 @@ class DNasStrategy():
                         # print(input_search.shape)
                         output = self.network(input_search)
                         loss, loss_ce, loss_lat, loss_mem, mean_lat, mean_mem = self._arch_loss(output, target_search, epoch)
-                        # loss = loss_ce + loss_lat + loss_mem
-                        postfix = {
-                        "Loss": round(float(loss.cpu().detach().numpy()), 4), 
-                        "Loss_CE": round(float(loss_ce.cpu().detach().numpy()), 4), 
-                        "Loss_LAT": round(float(loss_lat.cpu().detach().numpy()), 4), 
-                        "Loss_MEM": round(float(loss_mem.cpu().detach().numpy()), 4), 
-                        "eps": self.network._t, 
-                        "mean_lat": round(float(mean_lat.cpu().detach().numpy()), 4), 
-                        "mean_mem": mean_mem.cpu().detach().numpy()}
-                        pbar.set_postfix(postfix)
-                        loss.backward()
-                        # nn.utils.clip_grad_norm_(self._nas_weights, 0.1)
-                        # for w_g in self._nas_weights:
-                        #     print(w_g.grad)
-                        #     print(w_g)
-                        #     print("--------")
                         self.arch_optim.step()
                         self.arch_schedular.step()
 
@@ -170,11 +158,10 @@ class DNasStrategy():
                 top1.update(prec1.item(), n)
                 self.network._t = max(self.network._t * self._eps_decay, 1e-5)
                 ctr += 1
-                callback((ctr * 100) / (num_epochs * num_steps))
 
-            # self.network._t = max(self.network._t * esp_update_step, 1e-5)
-            print('Step: %03d, Obj_avg: %e, Top1_avg: %f' %
-                  (step, objs.avg, top1.avg))
+
+def compile(self):
+    super(DNasStrategy, self).compile()
 
 
 # Evaluate the supernet

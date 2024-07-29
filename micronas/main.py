@@ -43,10 +43,10 @@ class MicroNas:
         test_dataloader = DataLoader(self.test_dataset, batch_size=Config.batch_size, shuffle=True)
 
         self.logger.info(f"Compiling with, ts_len: {ts_len}, num_sensors: {num_sensors}, num_classes: {self.num_classes}")
-        self.search_strategy = search_strategy
-        self.search_strategy.compile(ts_len, num_sensors, self.num_classes, train_dataloader, vali_dataloader, test_dataloader)
         self.search_sapce = search_space
-        self.search_sapce.compile(ts_len, num_sensors, self.num_classes)    
+        self.search_sapce.compile(ts_len, num_sensors, self.num_classes)   
+        self.search_strategy = search_strategy
+        self.search_strategy.compile(ts_len, num_sensors, self.num_classes, train_dataloader, vali_dataloader, test_dataloader, self.search_sapce) 
 
 
 
